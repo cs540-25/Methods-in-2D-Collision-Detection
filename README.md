@@ -1,1 +1,1 @@
-# Methods-in-Collision-Detection
+# Methods-in-2D-Collision-Detection
