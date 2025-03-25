@@ -1,18 +1,10 @@
 #pragma once
 
-enum UNIT_TYPE {
-	FOOTMAN,
-	BARRIERMAN,
-	COMMANDER,
-	BUILDER,
-	SPAWNPOINT
-};
-
 struct Color {
 	unsigned char r, g, b, a;	// RGB and alpha for opacity
 };
 
-struct vector {
+struct vector {		// 2D collection of X and Y values
 	float x = 0;
 	float y = 0;
 	vector(float x = 0, float y = 0) {
@@ -38,7 +30,6 @@ public:
 	vector pos;
 	vector vel;
 	vector acc;
-	UNIT_TYPE type;
 	bool isVisible;
 	bool isStatic;
 	Color color;
