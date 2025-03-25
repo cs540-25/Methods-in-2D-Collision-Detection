@@ -32,7 +32,7 @@ public:
 	vector acc;
 	bool isVisible;
 	bool isStatic;
-	Color color;
+	Color color;	// Automatically set to white
 
 	Object(float x, float y);
 };
