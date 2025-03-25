@@ -9,5 +9,5 @@ Object::Object(float x, float y) {
 	color.a = 255;
 	isVisible = true;
 	isStatic = false;
-	type = FOOTMAN;
+
 }
