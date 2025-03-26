@@ -20,7 +20,7 @@ Game::Game(const int width, const int height, const int flags) {
 
 	// Board init
 	for (int i = 0; i < 1000; i++) {	// Adding test objects
-		Object* test = new Object(rand() % windowWidth, rand() % windowHeight);
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight));
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
 		objects.push_back(*test);

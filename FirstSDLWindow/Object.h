@@ -44,5 +44,5 @@ public:
 	bool isStatic;
 	Color color;
 
-	Object(float x, float y, float ident);
+	Object(float x, float y, float ident=0);
 };
