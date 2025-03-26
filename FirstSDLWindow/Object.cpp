@@ -1,6 +1,7 @@
 #include "Object.h"
+#include <cstdlib>
 
-Object::Object(float x, float y) {
+Object::Object(float x, float y, float ident) {
 	pos.x = x;
 	pos.y = y;
 	color.r = 255;
@@ -10,4 +11,10 @@ Object::Object(float x, float y) {
 	isVisible = true;
 	isStatic = false;
 	type = FOOTMAN;
+	if (ident == 0) {
+		id = rand();
+	}
+	else {
+		id = ident;
+	}
 }

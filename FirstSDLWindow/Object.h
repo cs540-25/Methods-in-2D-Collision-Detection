@@ -39,9 +39,10 @@ public:
 	vector vel;
 	vector acc;
 	UNIT_TYPE type;
+	size_t id;
 	bool isVisible;
 	bool isStatic;
 	Color color;
 
-	Object(float x, float y);
+	Object(float x, float y, float ident);
 };
