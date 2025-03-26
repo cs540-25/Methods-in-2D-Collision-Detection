@@ -40,7 +40,7 @@ Game::Game(const int width, const int height, const int flags) {
 Game::~Game() {
 	// Removing all Objects from the object vector
 	for (size_t i = 0; i < objects.size(); i++) {
-		delete& objects[i];
+		delete &objects[i];
 	}
 
 	SDL_DestroyRenderer(renderer);
@@ -53,13 +53,13 @@ int Game::handleEvents() {
 		std::cout << "Reading Input!" << std::endl;
 	SDL_Event event;
 	SDL_PollEvent(&event);
-
+	
 	switch (event.type) {
-	case SDL_QUIT:
-		running = false;
-		break;
-	default:
-		break;
+		case SDL_QUIT:
+			running = false;
+			break;
+		default:
+			break;
 	}
 	return 0;
 }
@@ -88,7 +88,7 @@ int Game::update() {
 	auto start = std::chrono::steady_clock::now();
 	deltaTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(start - endOfLastUpdate).count() / 1000;
 	if (DEBUG_UPDATE & flags) std::cout << "Deltatime = " << deltaTime << " seconds" << std::endl;
-
+	
 	// Update objects
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
 	updatePositions();
@@ -126,13 +126,4 @@ void Game::setBackgroundColor(unsigned char r, unsigned char g, unsigned char b,
 
 bool Game::isRunning() {
 	return running;
-}
-
-Object& Game::identify(float id) {
-	for (int i = 0; i < objects.size(); i++) {
-		if ((objects[i]).id == id) {
-			return objects[i];
-		}
-	}
-	return nullptr;
 }
