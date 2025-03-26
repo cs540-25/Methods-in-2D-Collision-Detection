@@ -109,6 +109,7 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) std::cout << "\tDrawing object " << i << std::endl;
 		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].pos.x, objects[i].pos.y);
+		if (typeid(objects[i]) == typeid(Circle) // Is the object just a point or a circle?
 		SDL_SetRenderDrawColor(renderer, objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
 		SDL_RenderDrawPoint(renderer, (int)objects[i].pos.x, (int)objects[i].pos.y);
 	}

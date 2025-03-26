@@ -34,5 +34,9 @@ public:
 	bool isStatic;
 	Color color;	// Automatically set to white
 
+	bool isCircle;
+	float radius;
+
 	Object(float x, float y);
+	Object(float x, float y, float radius);
 };
