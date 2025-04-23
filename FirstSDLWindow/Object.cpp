@@ -1,6 +1,7 @@
 #include "Object.h"
+#include <cstdlib>
 
-Object::Object(float x, float y) {
+Object::Object(float x, float y, float ident) {
 	pos.x = x;
 	pos.y = y;
 	color.r = 255;
@@ -11,6 +12,7 @@ Object::Object(float x, float y) {
 	isStatic = false;
 	isCircle = false;
 	radius = 0.5;
+  type = FOOTMAN;
 }
 
 Object::Object(float x, float y, float radius) {
@@ -23,5 +25,5 @@ Object::Object(float x, float y, float radius) {
 	isVisible = true;
 	isStatic = false;
 	isCircle = true;
-	this->radius = radius;
+	this->radius = radius;	
 }
