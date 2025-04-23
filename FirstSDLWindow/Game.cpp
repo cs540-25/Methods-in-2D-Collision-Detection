@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+int id_count = 0;
+
 Game::Game(const int width, const int height, const int flags) {
 	this->flags = flags;
 	
@@ -20,7 +22,8 @@ Game::Game(const int width, const int height, const int flags) {
 
 	// Board init
 	for (int i = 0; i < 1000; i++) {	// Adding test objects
-		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight));
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), id_count);
+		id_count += 1;
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
 		objects.push_back(*test);
@@ -127,12 +130,3 @@ void Game::setBackgroundColor(unsigned char r, unsigned char g, unsigned char b,
 bool Game::isRunning() {
 	return running;
 }
-
-//Object& Game::identify(float id) {
-//	for (int i = 0; i < objects.size(); i++) {
-//		if ((objects[i]).id == id) {
-//			return objects[i];
-//		}
-//	}
-//	return nullptr;
-//}

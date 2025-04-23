@@ -11,10 +11,5 @@ Object::Object(float x, float y, size_t ident) {
 	isVisible = true;
 	isStatic = false;
 	type = FOOTMAN;
-	if (ident == 0) {
-		id = rand();
-	}
-	else {
-		id = ident;
-	}
+	id = ident;
 }
