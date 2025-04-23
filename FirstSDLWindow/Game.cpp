@@ -128,11 +128,11 @@ bool Game::isRunning() {
 	return running;
 }
 
-Object& Game::identify(float id) {
-	for (int i = 0; i < objects.size(); i++) {
-		if ((objects[i]).id == id) {
-			return objects[i];
-		}
-	}
-	return nullptr;
-}
+//Object& Game::identify(float id) {
+//	for (int i = 0; i < objects.size(); i++) {
+//		if ((objects[i]).id == id) {
+//			return objects[i];
+//		}
+//	}
+//	return nullptr;
+//}
