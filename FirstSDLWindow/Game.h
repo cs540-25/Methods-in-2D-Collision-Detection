@@ -35,5 +35,7 @@ private:
 
 	int flags;
 	bool running;
+
+	void DrawCircle(SDL_Renderer* renderer, float centreX, float centreY, float radius);	// Draws a circle. Set the desired color before you call this function (circle rasterization)
 };
 
