@@ -10,6 +10,7 @@ Object::Object(float x, float y) {
 	isVisible = true;
 	isStatic = false;
 	isCircle = false;
+	radius = 0.5;
 }
 
 Object::Object(float x, float y, float radius) {

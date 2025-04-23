@@ -97,6 +97,44 @@ int Game::update() {
 	return 0;
 }
 
+void DrawCircle(SDL_Renderer* renderer, int32_t centreX, int32_t centreY, int32_t radius)
+{
+	const int32_t diameter = (radius * 2);
+
+	int32_t x = (radius - 1);
+	int32_t y = 0;
+	int32_t tx = 1;
+	int32_t ty = 1;
+	int32_t error = (tx - diameter);
+
+	while (x >= y)
+	{
+		//  Each of the following renders an octant of the circle
+		SDL_RenderDrawPoint(renderer, centreX + x, centreY - y);
+		SDL_RenderDrawPoint(renderer, centreX + x, centreY + y);
+		SDL_RenderDrawPoint(renderer, centreX - x, centreY - y);
+		SDL_RenderDrawPoint(renderer, centreX - x, centreY + y);
+		SDL_RenderDrawPoint(renderer, centreX + y, centreY - x);
+		SDL_RenderDrawPoint(renderer, centreX + y, centreY + x);
+		SDL_RenderDrawPoint(renderer, centreX - y, centreY - x);
+		SDL_RenderDrawPoint(renderer, centreX - y, centreY + x);
+
+		if (error <= 0)
+		{
+			++y;
+			error += ty;
+			ty += 2;
+		}
+
+		if (error > 0)
+		{
+			--x;
+			tx += 2;
+			error += (tx - diameter);
+		}
+	}
+}
+
 int Game::render() {
 	SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
 	SDL_RenderClear(renderer);
@@ -110,7 +148,10 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].pos.x, objects[i].pos.y);
 		if (objects[i].isCircle) {	// Is the object just a point or a circle?
-
+			// Draw circle
+		}
+		else {
+			// Draw point
 		}
 		SDL_SetRenderDrawColor(renderer, objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a); // Drawing a point
 		SDL_RenderDrawPoint(renderer, (int)objects[i].pos.x, (int)objects[i].pos.y);
