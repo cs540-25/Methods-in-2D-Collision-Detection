@@ -20,7 +20,7 @@ Game::Game(const int width, const int height, const int flags) {
 
 	// Board init
 	for (int i = 0; i < 1000; i++) {	// Adding test objects
-		Object* test = new Object(rand() % windowWidth, rand() % windowHeight);
+		Object* test = new Object((float)(rand() % windowWidth), (float)(rand() % windowHeight));
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
 		objects.push_back(*test);
@@ -109,14 +109,14 @@ void Game::DrawCircle(SDL_Renderer* renderer, float centreX, float centreY, floa
 	while (x >= y)
 	{
 		//  Each of the following renders an octant of the circle
-		SDL_RenderDrawPoint(renderer, centreX + x, centreY - y);
-		SDL_RenderDrawPoint(renderer, centreX + x, centreY + y);
-		SDL_RenderDrawPoint(renderer, centreX - x, centreY - y);
-		SDL_RenderDrawPoint(renderer, centreX - x, centreY + y);
-		SDL_RenderDrawPoint(renderer, centreX + y, centreY - x);
-		SDL_RenderDrawPoint(renderer, centreX + y, centreY + x);
-		SDL_RenderDrawPoint(renderer, centreX - y, centreY - x);
-		SDL_RenderDrawPoint(renderer, centreX - y, centreY + x);
+		SDL_RenderDrawPoint(renderer, (int)(centreX + x), (int)(centreY - y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX + x), (int)(centreY + y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - x), (int)(centreY - y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - x), (int)(centreY + y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX + y), (int)(centreY - x));
+		SDL_RenderDrawPoint(renderer, (int)(centreX + y), (int)(centreY + x));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - y), (int)(centreY - x));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - y), (int)(centreY + x));
 
 		if (error <= 0)
 		{
