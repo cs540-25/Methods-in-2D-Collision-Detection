@@ -29,7 +29,8 @@ Game::Game(const int width, const int height, const int flags) {
 		objects.push_back(*test);
 
 	}
-	Object test1(25, 25, 25);
+	Object test1(25, 25, 25, id_count);
+	id_count += 1;
 	test1.color.r = 255;
 	test1.color.g = 0;
 	test1.color.b = 0;

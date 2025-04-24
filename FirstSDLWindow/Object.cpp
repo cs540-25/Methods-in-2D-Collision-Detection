@@ -12,7 +12,7 @@ Object::Object(float x, float y, size_t ident) {
 	isStatic = false;
 	isCircle = false;
 	radius = 0.5;
-	id = ident
+	id = ident;
 }
 
 Object::Object(float x, float y, float radius, size_t ident) {
