@@ -33,10 +33,11 @@ public:
 	bool isVisible;
 	bool isStatic;
 	Color color;	// Automatically set to white
+	sizt_t id;
 
 	bool isCircle;
 	float radius;
 
-	Object(float x, float y);
-	Object(float x, float y, float radius);
+	Object(float x, float y, size_t ident=0);
+	Object(float x, float y, float radius, size_t ident=0);
 };

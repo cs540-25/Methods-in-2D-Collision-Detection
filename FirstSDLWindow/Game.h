@@ -21,6 +21,7 @@ public:
 	int render();
 	void setBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 	bool isRunning();
+	Object& identify(float id);
 
 private:
 	Color backgroundColor;						// The default color for the background is black

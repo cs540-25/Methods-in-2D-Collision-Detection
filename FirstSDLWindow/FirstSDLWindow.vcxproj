@@ -105,12 +105,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\SDL2-devel-2.30.9-VC\SDL2-2.30.9\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\SDL2-devel-2.30.9-VC\SDL2-2.30.9\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\SDL2-devel-2.30.9-VC.\SDL2-2.30.9.\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\SDL2-devel-2.30.9-VC\SDL2-2.30.9\lib\x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
