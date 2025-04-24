@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-int id_count = 0;
+size_t id_count = 0;
 
 Game::Game(const int width, const int height, const int flags) {
 	this->flags = flags;
@@ -29,10 +29,10 @@ Game::Game(const int width, const int height, const int flags) {
 		objects.push_back(*test);
 
 	}
-	Object test1(25, 25);
+	Object test1(25, 25, 25);
 	test1.color.r = 255;
-	test1.color.g = 255;
-	test1.color.b = 255;
+	test1.color.g = 0;
+	test1.color.b = 0;
 	test1.acc.x = (float)-30;
 	test1.acc.y = (float)-500;
 	objects.push_back(test1);
@@ -100,6 +100,43 @@ int Game::update() {
 	return 0;
 }
 
+void Game::DrawCircle(SDL_Renderer* renderer, float centreX, float centreY, float radius) {
+	const float diameter = (radius * 2);
+
+	float x = (radius - 1);
+	float y = 0;
+	float tx = 1;
+	float ty = 1;
+	float error = (tx - diameter);
+
+	while (x >= y)
+	{
+		//  Each of the following renders an octant of the circle
+		SDL_RenderDrawPoint(renderer, (int)(centreX + x), (int)(centreY - y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX + x), (int)(centreY + y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - x), (int)(centreY - y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - x), (int)(centreY + y));
+		SDL_RenderDrawPoint(renderer, (int)(centreX + y), (int)(centreY - x));
+		SDL_RenderDrawPoint(renderer, (int)(centreX + y), (int)(centreY + x));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - y), (int)(centreY - x));
+		SDL_RenderDrawPoint(renderer, (int)(centreX - y), (int)(centreY + x));
+
+		if (error <= 0)
+		{
+			++y;
+			error += ty;
+			ty += 2;
+		}
+
+		if (error > 0)
+		{
+			--x;
+			tx += 2;
+			error += (tx - diameter);
+		}
+	}
+}
+
 int Game::render() {
 	SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
 	SDL_RenderClear(renderer);
@@ -112,8 +149,15 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) std::cout << "\tDrawing object " << i << std::endl;
 		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].pos.x, objects[i].pos.y);
-		SDL_SetRenderDrawColor(renderer, objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
-		SDL_RenderDrawPoint(renderer, (int)objects[i].pos.x, (int)objects[i].pos.y);
+		if (objects[i].isCircle) {	// Is the object just a point or a circle?
+			// Draw circle
+			DrawCircle(renderer, objects[i].pos.x, objects[i].pos.y, objects[i].radius);
+		}
+		else {
+			// Draw point
+			SDL_SetRenderDrawColor(renderer, objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a); // Drawing a point
+			SDL_RenderDrawPoint(renderer, (int)objects[i].pos.x, (int)objects[i].pos.y);
+		}
 	}
 
 	SDL_RenderPresent(renderer);
