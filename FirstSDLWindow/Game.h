@@ -37,5 +37,6 @@ private:
 	bool running;
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
+	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not
 };
 

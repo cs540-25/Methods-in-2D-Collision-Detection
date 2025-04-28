@@ -143,6 +143,11 @@ void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
 	}
 }
 
+int Game::boundingCircleCollision(Object& a, Object& b) {
+	
+	return 0;
+}
+
 int Game::render() {
 	SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
 	SDL_RenderClear(renderer);
