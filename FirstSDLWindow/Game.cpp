@@ -21,22 +21,22 @@ Game::Game(const int width, const int height, const int flags) {
 	backgroundColor.a = 255;
 
 	// Board init
-	for (int i = 0; i < 1000; i++) {	// Adding test objects
-		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), id_count);
+	for (int i = 0; i < 10; i++) {	// Adding test objects
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 4, id_count);
 		id_count += 1;
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
 		objects.push_back(*test);
 
 	}
-	Object test1(25, 25, 25, id_count);
+	/*Object test1(25, 25, 25, id_count);
 	id_count += 1;
 	test1.color.r = 255;
 	test1.color.g = 0;
 	test1.color.b = 0;
 	test1.acc.x = (float)-30;
 	test1.acc.y = (float)-500;
-	objects.push_back(test1);
+	objects.push_back(test1);*/
 	endOfLastUpdate = std::chrono::steady_clock::now();		// For deltatime calculations
 	deltaTime = 0;
 }
@@ -101,7 +101,11 @@ int Game::update() {
 	return 0;
 }
 
-void Game::DrawCircle(SDL_Renderer* renderer, float centreX, float centreY, float radius) {
+void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
+	float radius = circle.radius;
+	float centreX = circle.pos.x;
+	float centreY = circle.pos.y;
+	
 	const float diameter = (radius * 2);
 
 	float x = (radius - 1);
@@ -110,6 +114,7 @@ void Game::DrawCircle(SDL_Renderer* renderer, float centreX, float centreY, floa
 	float ty = 1;
 	float error = (tx - diameter);
 
+	SDL_SetRenderDrawColor(renderer, circle.color.r, circle.color.g, circle.color.b, circle.color.a);
 	while (x >= y)
 	{
 		//  Each of the following renders an octant of the circle
@@ -152,7 +157,7 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].pos.x, objects[i].pos.y);
 		if (objects[i].isCircle) {	// Is the object just a point or a circle?
 			// Draw circle
-			DrawCircle(renderer, objects[i].pos.x, objects[i].pos.y, objects[i].radius);
+			DrawCircle(renderer, objects[i]);
 		}
 		else {
 			// Draw point
