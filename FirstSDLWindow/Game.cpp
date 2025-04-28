@@ -21,8 +21,8 @@ Game::Game(const int width, const int height, const int flags) {
 	backgroundColor.a = 255;
 
 	// Board init
-	for (int i = 0; i < 10; i++) {	// Adding test objects
-		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 30, id_count);
+	for (int i = 0; i < 100; i++) {	// Adding test objects
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
 		id_count += 1;
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
@@ -101,10 +101,10 @@ void Game::updatePositions() {
 			objects[i].color.a -= 1;
 
 			// Collision with edges
-			if (objects[i].pos.x >= windowWidth || objects[i].pos.x < 0) {	// on x axis
+			if (objects[i].pos.x + objects[i].radius >= windowWidth || objects[i].pos.x - objects[i].radius < 0) {	// on x axis
 				objects[i].vel.x *= -1;
 			}
-			if (objects[i].pos.y >= windowHeight || objects[i].pos.y < 0) {	// on y axis
+			if (objects[i].pos.y + objects[i].radius >= windowHeight || objects[i].pos.y - objects[i].radius < 0) {	// on y axis
 				objects[i].vel.y *= -1;
 			}
 		}
