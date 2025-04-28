@@ -5,9 +5,10 @@
 #include <chrono>
 
 enum Flags {
-	DEBUG_INPUT		= 1 << 0,
-	DEBUG_UPDATE	= 1 << 1,
-	DEBUG_RENDERER	= 1 << 2
+	DEBUG_INPUT			= 1 << 0,
+	DEBUG_UPDATE		= 1 << 1,
+	DEBUG_RENDERER		= 1 << 2,
+	BRUTE_FORCE_CIRCLE	= 1 << 3
 };
 
 class Game {
@@ -36,6 +37,8 @@ private:
 	bool running;
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
+
+	// Collision Functions
 	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not
 };
 

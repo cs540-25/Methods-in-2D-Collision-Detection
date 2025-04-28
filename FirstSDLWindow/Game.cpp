@@ -94,6 +94,16 @@ int Game::update() {
 	if (DEBUG_UPDATE & flags) std::cout << "Deltatime = " << deltaTime << " seconds" << std::endl;
 
 	// Update objects
+	if (DEBUG_UPDATE & flags) std::cout << "Calculating Collisions!" << std::endl;
+	if (BRUTE_FORCE_CIRCLE & flags) {
+		for (size_t i = 0; i < objects.size(); i++) {
+			for (size_t j = i; j < objects.size(); j++) {
+				if (boundingCircleCollision(objects[i], objects[j])) {
+					
+				}
+			}
+		}
+	}
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
 	updatePositions();
 
