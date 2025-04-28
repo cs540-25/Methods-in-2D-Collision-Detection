@@ -19,6 +19,9 @@ struct vector {		// 2D collection of X and Y values
 	vector operator+ (const vector& in) {
 		return vector(in.x + x, in.y + y);
 	}
+	vector operator- (const vector& in) {
+		return vector(x - in.x, y - in.y);
+	}
 	vector operator* (const float& in) {
 		return vector(x * in, y * in);
 	}
