@@ -32,7 +32,6 @@ private:
 
 	std::chrono::steady_clock::time_point endOfLastUpdate;
 	float deltaTime;							// Deltatime is measured in seconds
-
 	int flags;
 	bool running;
 
