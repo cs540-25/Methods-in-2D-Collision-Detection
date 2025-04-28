@@ -144,8 +144,10 @@ void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
 }
 
 int Game::boundingCircleCollision(Object& a, Object& b) {
-	
-	return 0;
+	vector d = a.pos - b.pos;	// Distance between centers
+	float dist2 = d.dot(d);		// This is just d^2
+	float radiusSum = a.radius + b.radius;
+	return dist2 <= radiusSum * radiusSum;	// is d^2 <= radiusSum^2?
 }
 
 int Game::render() {
