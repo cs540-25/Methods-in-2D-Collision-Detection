@@ -40,6 +40,7 @@ public:
 	bool isStatic;
 	Color color;	// Automatically set to white
 	size_t id;
+	int mass;		// This is probably always going to be 1, but we can change this for fun
 
 	bool isCircle;
 	float radius;

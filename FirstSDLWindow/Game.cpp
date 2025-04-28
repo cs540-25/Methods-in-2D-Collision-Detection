@@ -68,6 +68,27 @@ int Game::handleEvents() {
 	return 0;
 }
 
+void Game::handleCollision(Object& a, Object& b) {	// Supposedly, a collision with a static object should be much faster to calculate than two moving objects
+	if (b.isStatic) {
+		a.vel.x *= -1;
+		a.vel.y *= -1;
+		return;
+	}
+	else if (a.isStatic) {
+		b.vel.x *= -1;
+		b.vel.y *= -1;
+		return;
+	}
+
+	// Nonstatic Collision
+	vector newVelocityA, newVelocityB;
+	newVelocityB.x = (2 * a.mass * a.vel.x + b.mass * b.vel.x - a.mass * b.vel.x) / (a.mass + b.mass);
+	newVelocityB.y = (2 * a.mass * a.vel.y + b.mass * b.vel.y - a.mass * b.vel.y) / (a.mass + b.mass);
+	newVelocityA.x = b.vel.x + newVelocityB.x - a.vel.x;
+	newVelocityA.y = b.vel.y + newVelocityB.y - a.vel.y;
+	return;
+}
+
 void Game::updatePositions() {
 	for (auto i = 0; i < objects.size(); i++) {
 		if (!objects[i].isStatic) {

@@ -13,6 +13,7 @@ Object::Object(float x, float y, size_t ident) {
 	isCircle = false;
 	radius = 0.5;
 	id = ident;
+	mass = 1;
 }
 
 Object::Object(float x, float y, float radius, size_t ident) {
@@ -27,4 +28,5 @@ Object::Object(float x, float y, float radius, size_t ident) {
 	isCircle = true;
 	this->radius = radius;
 	id = ident;	
+	mass = 1;
 }
