@@ -22,7 +22,7 @@ Game::Game(const int width, const int height, const int flags) {
 
 	// Board init
 	for (int i = 0; i < 10; i++) {	// Adding test objects
-		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 4, id_count);
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 30, id_count);
 		id_count += 1;
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
@@ -86,6 +86,9 @@ void Game::handleCollision(Object& a, Object& b) {	// Supposedly, a collision wi
 	newVelocityB.y = (2 * a.mass * a.vel.y + b.mass * b.vel.y - a.mass * b.vel.y) / (a.mass + b.mass);
 	newVelocityA.x = b.vel.x + newVelocityB.x - a.vel.x;
 	newVelocityA.y = b.vel.y + newVelocityB.y - a.vel.y;
+
+	a.vel = newVelocityA;
+	b.vel = newVelocityB;
 	return;
 }
 
@@ -113,18 +116,25 @@ int Game::update() {
 	auto start = std::chrono::steady_clock::now();
 	deltaTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(start - endOfLastUpdate).count() / 1000;
 	if (DEBUG_UPDATE & flags) std::cout << "Deltatime = " << deltaTime << " seconds" << std::endl;
-
-	// Update objects
+	
+	// Determine what kind of collision detection are we using (set through flags from constructor)
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Collisions!" << std::endl;
 	if (BRUTE_FORCE_CIRCLE & flags) {
 		for (size_t i = 0; i < objects.size(); i++) {
-			for (size_t j = i; j < objects.size(); j++) {
+			for (size_t j = i + 1; j < objects.size(); j++) {
 				if (boundingCircleCollision(objects[i], objects[j])) {
-					
+					/*std::cout << "Collision moment\n";*/
+					objects[i].color.b = 0;
+					objects[i].color.g = 0;
+					objects[j].color.b = 0;
+					objects[j].color.g = 0;
+					handleCollision(objects[i], objects[j]);
 				}
 			}
 		}
 	}
+
+	// Update Object Positions
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
 	updatePositions();
 

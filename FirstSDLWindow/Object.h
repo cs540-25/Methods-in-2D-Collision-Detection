@@ -25,7 +25,7 @@ struct vector {		// 2D collection of X and Y values
 	vector operator* (const float& in) {
 		return vector(x * in, y * in);
 	}
-	int dot(const vector& in) {
+	float dot(const vector& in) {
 		return x * in.x + y * in.y;
 	}
 };
