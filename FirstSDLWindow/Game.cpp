@@ -21,8 +21,8 @@ Game::Game(const int width, const int height, const int flags) {
 	backgroundColor.a = 255;
 
 	// Board init
-	for (int i = 0; i < 10; i++) {	// Adding test objects
-		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 4, id_count);
+	for (int i = 0; i < 100; i++) {	// Adding test objects
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
 		id_count += 1;
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
@@ -68,6 +68,30 @@ int Game::handleEvents() {
 	return 0;
 }
 
+void Game::handleCollision(Object& a, Object& b) {	// Supposedly, a collision with a static object should be much faster to calculate than two moving objects
+	if (b.isStatic) {
+		a.vel.x *= -1;
+		a.vel.y *= -1;
+		return;
+	}
+	else if (a.isStatic) {
+		b.vel.x *= -1;
+		b.vel.y *= -1;
+		return;
+	}
+
+	// Nonstatic Collision
+	vector newVelocityA, newVelocityB;
+	newVelocityB.x = (2 * a.mass * a.vel.x + b.mass * b.vel.x - a.mass * b.vel.x) / (a.mass + b.mass);
+	newVelocityB.y = (2 * a.mass * a.vel.y + b.mass * b.vel.y - a.mass * b.vel.y) / (a.mass + b.mass);
+	newVelocityA.x = b.vel.x + newVelocityB.x - a.vel.x;
+	newVelocityA.y = b.vel.y + newVelocityB.y - a.vel.y;
+
+	a.vel = newVelocityA;
+	b.vel = newVelocityB;
+	return;
+}
+
 void Game::updatePositions() {
 	for (auto i = 0; i < objects.size(); i++) {
 		if (!objects[i].isStatic) {
@@ -77,10 +101,10 @@ void Game::updatePositions() {
 			objects[i].color.a -= 1;
 
 			// Collision with edges
-			if (objects[i].pos.x >= windowWidth || objects[i].pos.x < 0) {	// on x axis
+			if (objects[i].pos.x + objects[i].radius >= windowWidth || objects[i].pos.x - objects[i].radius < 0) {	// on x axis
 				objects[i].vel.x *= -1;
 			}
-			if (objects[i].pos.y >= windowHeight || objects[i].pos.y < 0) {	// on y axis
+			if (objects[i].pos.y + objects[i].radius >= windowHeight || objects[i].pos.y - objects[i].radius < 0) {	// on y axis
 				objects[i].vel.y *= -1;
 			}
 		}
@@ -92,8 +116,25 @@ int Game::update() {
 	auto start = std::chrono::steady_clock::now();
 	deltaTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(start - endOfLastUpdate).count() / 1000;
 	if (DEBUG_UPDATE & flags) std::cout << "Deltatime = " << deltaTime << " seconds" << std::endl;
+	
+	// Determine what kind of collision detection are we using (set through flags from constructor)
+	if (DEBUG_UPDATE & flags) std::cout << "Calculating Collisions!" << std::endl;
+	if (BRUTE_FORCE_CIRCLE & flags) {
+		for (size_t i = 0; i < objects.size(); i++) {
+			for (size_t j = i + 1; j < objects.size(); j++) {
+				if (boundingCircleCollision(objects[i], objects[j])) {
+					/*std::cout << "Collision moment\n";*/
+					objects[i].color.b = 0;
+					objects[i].color.g = 0;
+					objects[j].color.b = 0;
+					objects[j].color.g = 0;
+					handleCollision(objects[i], objects[j]);
+				}
+			}
+		}
+	}
 
-	// Update objects
+	// Update Object Positions
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
 	updatePositions();
 
@@ -141,6 +182,13 @@ void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
 			error += (tx - diameter);
 		}
 	}
+}
+
+int Game::boundingCircleCollision(Object& a, Object& b) {
+	vector d = a.pos - b.pos;	// Distance between centers
+	float dist2 = d.dot(d);		// This is just d^2
+	float radiusSum = a.radius + b.radius;
+	return dist2 <= radiusSum * radiusSum;	// is d^2 <= radiusSum^2?
 }
 
 int Game::render() {
