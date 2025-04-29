@@ -19,6 +19,7 @@ Game::Game(const int width, const int height, const int flags) {
 	backgroundColor.g = 0;
 	backgroundColor.b = 0;
 	backgroundColor.a = 255;
+	countedFrames = 0;
 
 	// Board init
 	for (int i = 0; i < 100; i++) {	// Adding test objects
