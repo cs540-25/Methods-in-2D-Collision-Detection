@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
+#include <limits>
 
 size_t id_count = 0;
 
@@ -23,6 +24,8 @@ Game::Game(const int width, const int height, const int flags) {
 	totalRuntime = 0;
 	fpsTimer = 0;
 	countedFrames = 0;
+	minFPS = std::numeric_limits<float>::infinity();
+	maxFPS = 0;
 
 	// Board init
 	for (int i = 0; i < 100; i++) {	// Adding test objects
@@ -48,9 +51,12 @@ Game::Game(const int width, const int height, const int flags) {
 Game::~Game() {
 	// Printing Metrics
 	if (PRINT_METRICS & flags) {
-		printf("Total Runtime:		%10.10f\n", totalRuntime);
-		printf("Total Frames:		%10.10zu\n", totalFrames);
-		printf("Average Framerate:	%10.10f\n", totalFrames / totalRuntime);
+		printf("Total Runtime:			%10.10f\n", totalRuntime);
+		printf("Total Frames:			%10.10zu\n", totalFrames);
+		printf("Average Framerate:		%10.10f\n", totalFrames / totalRuntime);
+		printf("Maximum Framerate:		%10.10f\n", maxFPS);
+		printf("Minimum Framerate:		%10.10f\n", minFPS);
+		printf("Framerate Variability:	%10.10f\n", maxFPS-minFPS);
 		//std::string response;
 		//std::cout << "Enter any character to close: ";
 		//std::cin >> response;
@@ -136,8 +142,13 @@ int Game::update() {
 	countedFrames++;	// This isn't efficient
 	totalRuntime += deltaTime;
 	fpsTimer += deltaTime;
-	if (fpsTimer >= 0.1) {
-		std::cout << countedFrames / fpsTimer << std::endl;
+	if (fpsTimer >= 0.05) {
+		float fps = countedFrames / fpsTimer;
+		if (fps > maxFPS)	maxFPS = fps;
+		if (fps < minFPS)	minFPS = fps;
+		if (PRINT_METRICS & flags) {
+			std::cout << countedFrames / fpsTimer << std::endl;
+		}
 		fpsTimer = 0;
 		countedFrames = 0;
 	}
