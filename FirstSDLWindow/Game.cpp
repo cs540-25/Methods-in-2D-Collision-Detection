@@ -20,14 +20,15 @@ Game::Game(const int width, const int height, const int flags) {
 	backgroundColor.b = 0;
 	backgroundColor.a = 255;
 	countedFrames = 0;
+	totalRuntime = 0;
 
 	// Board init
 	for (int i = 0; i < 100; i++) {	// Adding test objects
-		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
+		Object test(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
 		id_count += 1;
-		test->acc.x = (float)(rand() % 100 + 1) / 20;
-		test->acc.y = (float) 500;
-		objects.push_back(*test);
+		test.acc.x = (float)(rand() % 100 + 1) / 20;
+		test.acc.y = (float) 500;
+		objects.push_back(test);
 
 	}
 	/*Object test1(25, 25, 25, id_count);
@@ -43,10 +44,20 @@ Game::Game(const int width, const int height, const int flags) {
 }
 
 Game::~Game() {
-	// Removing all Objects from the object vector
-	for (size_t i = 0; i < objects.size(); i++) {
-		delete& objects[i];
+	// Printing Metrics
+	if (PRINT_METRICS & flags) {
+		printf("Total Runtime:		%10.10f\n", totalRuntime);
+		printf("Total Frames:		%10.10zu\n", countedFrames);
+		printf("Average Framerate:	%10.10f\n", countedFrames / totalRuntime);
+		//std::string response;
+		//std::cout << "Enter any character to close: ";
+		//std::cin >> response;
 	}
+
+	// Removing all Objects from the object vector (There is no need to do this now because there's no more NEW keywords
+	/*for (size_t i = 0; i < objects.size(); i++) {
+		delete& objects[i];
+	}*/
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -117,6 +128,10 @@ int Game::update() {
 	auto start = std::chrono::steady_clock::now();
 	deltaTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(start - endOfLastUpdate).count() / 1000;
 	if (DEBUG_UPDATE & flags) std::cout << "Deltatime = " << deltaTime << " seconds" << std::endl;
+
+	// Metrics
+	countedFrames++;
+	totalRuntime += deltaTime;
 	
 	// Determine what kind of collision detection are we using (set through flags from constructor)
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Collisions!" << std::endl;

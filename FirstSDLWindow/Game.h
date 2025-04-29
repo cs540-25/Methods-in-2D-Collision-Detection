@@ -8,7 +8,8 @@ enum Flags {
 	DEBUG_INPUT			= 1 << 0,
 	DEBUG_UPDATE		= 1 << 1,
 	DEBUG_RENDERER		= 1 << 2,
-	BRUTE_FORCE_CIRCLE	= 1 << 3
+	PRINT_METRICS		= 1 << 3,
+	BRUTE_FORCE_CIRCLE	= 1 << 4
 };
 
 class Game {
@@ -24,6 +25,7 @@ public:
 	void setBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 	bool isRunning();
 	size_t countedFrames;
+	double totalRuntime;						// Stored in seconds
 
 private:
 	Color backgroundColor;						// The default color for the background is black
