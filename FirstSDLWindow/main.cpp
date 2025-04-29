@@ -61,7 +61,6 @@ int main(int args, char* argv[]) {
 		Update
 		Render
 	*/
-	game.setBackgroundColor(0, 0, 255, 255);
 
 	if (RUN_BY_STEP) {
 		std::cout << "Enter any key to continue simulation: ";
