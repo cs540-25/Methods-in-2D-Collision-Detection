@@ -8,7 +8,8 @@ enum Flags {
 	DEBUG_INPUT			= 1 << 0,
 	DEBUG_UPDATE		= 1 << 1,
 	DEBUG_RENDERER		= 1 << 2,
-	BRUTE_FORCE_CIRCLE	= 1 << 3
+	PRINT_METRICS		= 1 << 3,
+	BRUTE_FORCE_CIRCLE	= 1 << 4
 };
 
 class Game {
@@ -23,6 +24,8 @@ public:
 	int render();
 	void setBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 	bool isRunning();
+	size_t totalFrames;
+	double totalRuntime;						// Stored in seconds
 
 private:
 	Color backgroundColor;						// The default color for the background is black
@@ -36,6 +39,11 @@ private:
 	float deltaTime;							// Deltatime is measured in seconds
 	int flags;
 	bool running;
+
+	// Metrics
+	float minFPS, maxFPS;
+	float fpsTimer;								// Tracks the elapsed time since last fps evaluation
+	size_t countedFrames;
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
 

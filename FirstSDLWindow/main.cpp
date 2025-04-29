@@ -50,7 +50,7 @@ int main(int args, char* argv[]) {
 		Place all initial units on the board
 	*/
 
-	Game game(600, 400, BRUTE_FORCE_CIRCLE);
+	Game game(600, 400, BRUTE_FORCE_CIRCLE | PRINT_METRICS);
 
 	/************************************/
 	//   G A M E   L O O P
@@ -61,7 +61,6 @@ int main(int args, char* argv[]) {
 		Update
 		Render
 	*/
-	game.setBackgroundColor(0, 0, 255, 255);
 
 	if (RUN_BY_STEP) {
 		std::cout << "Enter any key to continue simulation: ";
