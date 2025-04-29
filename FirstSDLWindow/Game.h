@@ -24,7 +24,7 @@ public:
 	int render();
 	void setBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 	bool isRunning();
-	size_t countedFrames;
+	size_t totalFrames;
 	double totalRuntime;						// Stored in seconds
 
 private:
@@ -39,6 +39,11 @@ private:
 	float deltaTime;							// Deltatime is measured in seconds
 	int flags;
 	bool running;
+
+	// Metrics
+	float minFPS, maxFPS;
+	float fpsTimer;								// Tracks the elapsed time since last fps evaluation
+	size_t countedFrames;
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
 

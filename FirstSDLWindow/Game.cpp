@@ -19,8 +19,10 @@ Game::Game(const int width, const int height, const int flags) {
 	backgroundColor.g = 0;
 	backgroundColor.b = 0;
 	backgroundColor.a = 255;
-	countedFrames = 0;
+	totalFrames = 0;
 	totalRuntime = 0;
+	fpsTimer = 0;
+	countedFrames = 0;
 
 	// Board init
 	for (int i = 0; i < 100; i++) {	// Adding test objects
@@ -47,8 +49,8 @@ Game::~Game() {
 	// Printing Metrics
 	if (PRINT_METRICS & flags) {
 		printf("Total Runtime:		%10.10f\n", totalRuntime);
-		printf("Total Frames:		%10.10zu\n", countedFrames);
-		printf("Average Framerate:	%10.10f\n", countedFrames / totalRuntime);
+		printf("Total Frames:		%10.10zu\n", totalFrames);
+		printf("Average Framerate:	%10.10f\n", totalFrames / totalRuntime);
 		//std::string response;
 		//std::cout << "Enter any character to close: ";
 		//std::cin >> response;
@@ -130,8 +132,15 @@ int Game::update() {
 	if (DEBUG_UPDATE & flags) std::cout << "Deltatime = " << deltaTime << " seconds" << std::endl;
 
 	// Metrics
-	countedFrames++;
+	totalFrames++;
+	countedFrames++;	// This isn't efficient
 	totalRuntime += deltaTime;
+	fpsTimer += deltaTime;
+	if (fpsTimer >= 0.1) {
+		std::cout << countedFrames / fpsTimer << std::endl;
+		fpsTimer = 0;
+		countedFrames = 0;
+	}
 	
 	// Determine what kind of collision detection are we using (set through flags from constructor)
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Collisions!" << std::endl;
