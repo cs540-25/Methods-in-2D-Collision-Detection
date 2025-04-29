@@ -15,7 +15,7 @@ enum Flags {
 class Game {
 
 public:
-	Game(const int width, const int height, const int flags);						// Initializes the screen as well as the initial placements for spawners
+	Game(const int width, const int height, const int numObjects, const int flags);						// Initializes the screen as well as the initial placements for spawners
 	~Game();
 	int handleEvents();
 	int update();

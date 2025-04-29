@@ -6,7 +6,7 @@
 
 size_t id_count = 0;
 
-Game::Game(const int width, const int height, const int flags) {
+Game::Game(const int width, const int height, const int numObjects, const int flags) {
 	this->flags = flags;
 	
 	// SDL init
@@ -28,7 +28,7 @@ Game::Game(const int width, const int height, const int flags) {
 	maxFPS = 0;
 
 	// Board init
-	for (int i = 0; i < 100; i++) {	// Adding test objects
+	for (int i = 0; i < numObjects; i++) {	// Adding test objects
 		Object test(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
 		id_count += 1;
 		test.acc.x = (float)(rand() % 100 + 1) / 20;
@@ -56,7 +56,8 @@ Game::~Game() {
 		printf("Average Framerate:		%10.10f\n", totalFrames / totalRuntime);
 		printf("Maximum Framerate:		%10.10f\n", maxFPS);
 		printf("Minimum Framerate:		%10.10f\n", minFPS);
-		printf("Framerate Variability:	%10.10f\n", maxFPS-minFPS);
+		printf("Framerate Variability:	%10.10f\n", maxFPS - minFPS);
+		printf("Framerate per Object:	%10.10f\n", (totalFrames / totalRuntime)/objects.size());
 		//std::string response;
 		//std::cout << "Enter any character to close: ";
 		//std::cin >> response;
