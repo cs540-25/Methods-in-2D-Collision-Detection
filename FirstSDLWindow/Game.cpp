@@ -33,6 +33,12 @@ Game::Game(const int width, const int height, const int flags) {
 		id_count += 1;
 		test.acc.x = (float)(rand() % 100 + 1) / 20;
 		test.acc.y = (float) 500;
+		
+		// Adding colliders
+		if (flags & BRUTE_FORCE_AABB) {
+			test.createAABB();
+		}
+		
 		objects.push_back(test);
 
 	}
@@ -62,10 +68,12 @@ Game::~Game() {
 		//std::cin >> response;
 	}
 
-	// Removing all Objects from the object vector (There is no need to do this now because there's no more NEW keywords
-	/*for (size_t i = 0; i < objects.size(); i++) {
-		delete& objects[i];
-	}*/
+	// Object cleanup
+	if (flags & BRUTE_FORCE_AABB) {
+		for (size_t i = 0; i < objects.size(); i++) {
+			objects[i].destroyAABB();
+		}
+	}
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
