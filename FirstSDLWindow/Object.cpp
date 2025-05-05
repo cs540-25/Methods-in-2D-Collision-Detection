@@ -1,6 +1,23 @@
 #include "Object.h"
 #include <cstdlib>
 
+int Object::createAABB() { 
+	AABB = new AxisAlignedBoundingBox;
+	if (isCircle) {
+		AABB->center = pos;
+		AABB->radi[0] = radius;
+	}
+	else {
+		return 0;
+	}
+	return 1;
+}
+
+int Object::destroyAABB() {
+	
+	return 0;
+}
+
 Object::Object(float x, float y, size_t ident) {
 	pos.x = x;
 	pos.y = y;
@@ -14,6 +31,9 @@ Object::Object(float x, float y, size_t ident) {
 	radius = 0.5;
 	id = ident;
 	mass = 1;
+
+	// Colliders
+	AABB = NULL;
 }
 
 Object::Object(float x, float y, float radius, size_t ident) {
@@ -29,4 +49,7 @@ Object::Object(float x, float y, float radius, size_t ident) {
 	this->radius = radius;
 	id = ident;	
 	mass = 1;
+
+	// Colliders
+	AABB = NULL;
 }
