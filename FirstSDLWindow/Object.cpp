@@ -1,20 +1,21 @@
 #include "Object.h"
 #include <cstdlib>
 
-int Object::createAABB() { 
+int Object::createAABB() {	
 	AABB = new AxisAlignedBoundingBox;
 	if (isCircle) {
 		AABB->center = pos;
 		AABB->radi[0] = radius;
 	}
-	else {
+	else {	// Currently will only work for circles
 		return 0;
 	}
 	return 1;
 }
 
 int Object::destroyAABB() {
-	
+	delete AABB;
+	AABB = NULL;
 	return 0;
 }
 
