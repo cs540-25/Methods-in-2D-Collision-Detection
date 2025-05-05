@@ -6,6 +6,7 @@ int Object::createAABB() {
 	if (isCircle) {
 		AABB->center = pos;
 		AABB->radi[0] = radius;
+		AABB->radi[1] = radius;
 	}
 	else {	// Currently will only work for circles
 		return 0;
