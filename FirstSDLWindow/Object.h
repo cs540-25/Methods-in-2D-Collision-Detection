@@ -35,6 +35,8 @@ struct AxisAlignedBoundingBox {
 	vector* center;	// Pointer so that we can keep track of the rapidly changing positions
 	float radi[2];	// 1/2 of width and length
 	SDL_Rect toSDLRect();
+	vector min();	// Returns the top-left point
+	vector max();	// Returns the bottom-right point
 };
 
 

@@ -65,3 +65,13 @@ SDL_Rect AxisAlignedBoundingBox::toSDLRect()
 	ret.h = radi[1] * 2;
 	return ret;
 }
+
+vector AxisAlignedBoundingBox::min()
+{
+	return vector(center->x - radi[0], center->y - radi[1]);
+}
+
+vector AxisAlignedBoundingBox::max()
+{
+	return vector(center->x + radi[0], center->y + radi[1]);
+}
