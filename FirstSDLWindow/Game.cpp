@@ -23,6 +23,10 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 	backgroundColor.g = 0;
 	backgroundColor.b = 0;
 	backgroundColor.a = 255;
+	colliderColor.r = 0;
+	colliderColor.g = 255;
+	colliderColor.b = 0;
+	colliderColor.a = 255;
 	totalFrames = 0;
 	totalRuntime = 0;
 	fpsTimer = 0;
@@ -280,8 +284,14 @@ int Game::render() {
 			// Draw circle
 			SDL_SetRenderDrawColor(renderer, objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
 			DrawCircle(renderer, *objects[i]);
-			//SDL_SetRenderDrawColor(renderer, 255, 255, 255, objects[i]->color.a);
-			//SDL_RenderDrawPoint(renderer, objects[i]->AABB->center->x, objects[i]->AABB->center->y);	// Drawing the center of the collider
+			
+			// Drawing colliders
+			if (FLAG_SET(RENDER_COLLIDERS | BRUTE_FORCE_AABB)) {
+				SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a);
+				SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
+				SDL_Rect collider = objects[i]->AABB->toSDLRect();
+				SDL_RenderDrawRect(renderer, &collider);
+			}
 		}
 		else {
 			// Draw point
@@ -299,6 +309,13 @@ void Game::setBackgroundColor(unsigned char r, unsigned char g, unsigned char b,
 	backgroundColor.g = g;
 	backgroundColor.b = b;
 	backgroundColor.a = a;
+}
+
+void Game::setColliderColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+	colliderColor.r = r;
+	colliderColor.g = g;
+	colliderColor.b = b;
+	colliderColor.a = a;
 }
 
 bool Game::isRunning() {

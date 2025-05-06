@@ -9,8 +9,9 @@ enum Flags {
 	DEBUG_UPDATE		= 1 << 1,
 	DEBUG_RENDERER		= 1 << 2,
 	PRINT_METRICS		= 1 << 3,
-	BRUTE_FORCE_CIRCLE	= 1 << 4,
-	BRUTE_FORCE_AABB	= 1 << 5
+	RENDER_COLLIDERS	= 1 << 4,
+	BRUTE_FORCE_CIRCLE	= 1 << 5,
+	BRUTE_FORCE_AABB	= 1 << 6
 };
 
 class Game {
@@ -24,12 +25,14 @@ public:
 	void handleCollision(Object& a, Object& b);		// Changes the velocities and accelerations of the two objects to their new directions
 	int render();
 	void setBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+	void setColliderColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 	bool isRunning();
 	size_t totalFrames;
 	double totalRuntime;						// Stored in seconds
 
 private:
 	Color backgroundColor;						// The default color for the background is black
+	Color colliderColor;
 	SDL_Window* window;
 	int windowHeight;
 	int windowWidth;
