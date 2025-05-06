@@ -70,7 +70,7 @@ Game::~Game() {
 		printf("Maximum Framerate:     %20.10f\n", maxFPS);
 		printf("Minimum Framerate:     %20.10f\n", minFPS);
 		printf("Framerate Variability: %20.10f\n", maxFPS - minFPS);
-		printf("Frames per Object:     %20.10f\n", (float)totalFrames / objects.size());
+		printf("Framerate per Object:  %20.10f\n", (totalFrames / totalRuntime) / objects.size());
 		//std::string response;
 		//std::cout << "Enter any character to close: ";
 		//std::cin >> response;
