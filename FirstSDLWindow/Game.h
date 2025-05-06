@@ -31,6 +31,7 @@ public:
 
 private:
 	Color backgroundColor;						// The default color for the background is black
+	Color colliderColor;
 	SDL_Window* window;
 	int windowHeight;
 	int windowWidth;
