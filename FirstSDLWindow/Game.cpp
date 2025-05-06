@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <limits>
+#include <cmath>
+
+#define FLAG_SET(flag) (((flag) & (flags)) == (flag))
 
 size_t id_count = 0;
 
@@ -29,10 +32,16 @@ Game::Game(const int width, const int height, const int flags) {
 
 	// Board init
 	for (int i = 0; i < 100; i++) {	// Adding test objects
-		Object test(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
 		id_count += 1;
-		test.acc.x = (float)(rand() % 100 + 1) / 20;
-		test.acc.y = (float) 500;
+		test->acc.x = (float)(rand() % 100 + 1) / 20;
+		test->acc.y = (float) 500;
+		
+		// Adding colliders
+		if (flags & BRUTE_FORCE_AABB) {
+			test->createAABB();
+		}
+		
 		objects.push_back(test);
 
 	}
@@ -62,10 +71,12 @@ Game::~Game() {
 		//std::cin >> response;
 	}
 
-	// Removing all Objects from the object vector (There is no need to do this now because there's no more NEW keywords
-	/*for (size_t i = 0; i < objects.size(); i++) {
-		delete& objects[i];
-	}*/
+	// Object cleanup
+	if (flags & BRUTE_FORCE_AABB) {
+		for (size_t i = 0; i < objects.size(); i++) {
+			objects[i]->destroyAABB();
+		}
+	}
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -114,18 +125,18 @@ void Game::handleCollision(Object& a, Object& b) {	// Supposedly, a collision wi
 
 void Game::updatePositions() {
 	for (auto i = 0; i < objects.size(); i++) {
-		if (!objects[i].isStatic) {
+		if (!objects[i]->isStatic) {
 			// Movement
-			objects[i].vel = objects[i].vel + objects[i].acc * deltaTime;
-			objects[i].pos = objects[i].pos + objects[i].vel * deltaTime;
-			objects[i].color.a -= 1;
+			objects[i]->vel = objects[i]->vel + objects[i]->acc * deltaTime;
+			objects[i]->pos = objects[i]->pos + objects[i]->vel * deltaTime;
+			objects[i]->color.a -= 1;
 
 			// Collision with edges
-			if (objects[i].pos.x + objects[i].radius >= windowWidth || objects[i].pos.x - objects[i].radius < 0) {	// on x axis
-				objects[i].vel.x *= -1;
+			if (objects[i]->pos.x + objects[i]->radius >= windowWidth || objects[i]->pos.x - objects[i]->radius < 0) {	// on x axis
+				objects[i]->vel.x *= -1;
 			}
-			if (objects[i].pos.y + objects[i].radius >= windowHeight || objects[i].pos.y - objects[i].radius < 0) {	// on y axis
-				objects[i].vel.y *= -1;
+			if (objects[i]->pos.y + objects[i]->radius >= windowHeight || objects[i]->pos.y - objects[i]->radius < 0) {	// on y axis
+				objects[i]->vel.y *= -1;
 			}
 		}
 	}
@@ -158,13 +169,27 @@ int Game::update() {
 	if (BRUTE_FORCE_CIRCLE & flags) {
 		for (size_t i = 0; i < objects.size(); i++) {
 			for (size_t j = i + 1; j < objects.size(); j++) {
-				if (boundingCircleCollision(objects[i], objects[j])) {
+				if (boundingCircleCollision(*objects[i], *objects[j])) {
 					/*std::cout << "Collision moment\n";*/
-					objects[i].color.b = 0;
-					objects[i].color.g = 0;
-					objects[j].color.b = 0;
-					objects[j].color.g = 0;
-					handleCollision(objects[i], objects[j]);
+					objects[i]->color.b = 0;
+					objects[i]->color.g = 0;
+					objects[j]->color.b = 0;
+					objects[j]->color.g = 0;
+					handleCollision(*objects[i], *objects[j]);
+				}
+			}
+		}
+	}
+	else if (BRUTE_FORCE_AABB & flags) {
+		for (size_t i = 0; i < objects.size(); i++) {
+			for (size_t j = i + 1; j < objects.size(); j++) {
+				if (AABBCollision(*objects[i], *objects[j])) {
+					//std::cout << "Collision moment\n";
+					objects[i]->color.b = 0;
+					objects[i]->color.g = 0;
+					objects[j]->color.b = 0;
+					objects[j]->color.g = 0;
+					handleCollision(*objects[i], *objects[j]);
 				}
 			}
 		}
@@ -191,7 +216,6 @@ void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
 	float ty = 1;
 	float error = (tx - diameter);
 
-	SDL_SetRenderDrawColor(renderer, circle.color.r, circle.color.g, circle.color.b, circle.color.a);
 	while (x >= y)
 	{
 		//  Each of the following renders an octant of the circle
@@ -227,6 +251,17 @@ int Game::boundingCircleCollision(Object& a, Object& b) {
 	return dist2 <= radiusSum * radiusSum;	// is d^2 <= radiusSum^2?
 }
 
+int Game::AABBCollision(Object& a, Object& b) {
+	const vector* aCenter = a.AABB->center;
+	const float* aRadi = a.AABB->radi;
+	const vector* bCenter = b.AABB->center;
+	const float* bRadi = b.AABB->radi;
+	if (abs(aCenter->x - bCenter->x) > (aRadi[0] + bRadi[0])) return 0;
+	if (abs(aCenter->y - bCenter->y) > (aRadi[1] + bRadi[1])) return 0;
+
+	return 1;
+}
+
 int Game::render() {
 	SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
 	SDL_RenderClear(renderer);
@@ -237,16 +272,20 @@ int Game::render() {
 
 	for (auto i = 0; i < objects.size(); i++) {
 		if (DEBUG_RENDERER & flags) std::cout << "\tDrawing object " << i << std::endl;
-		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
-		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].pos.x, objects[i].pos.y);
-		if (objects[i].isCircle) {	// Is the object just a point or a circle?
+		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
+		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i]->pos.x, objects[i]->pos.y);
+		if (FLAG_SET(DEBUG_RENDERER | BRUTE_FORCE_AABB)) printf("\t\tCoordinateAABB = (%f, %f)\n", objects[i]->AABB->center->x, objects[i]->AABB->center->y);
+		if (objects[i]->isCircle) {	// Is the object just a point or a circle?
 			// Draw circle
-			DrawCircle(renderer, objects[i]);
+			SDL_SetRenderDrawColor(renderer, objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
+			DrawCircle(renderer, *objects[i]);
+			//SDL_SetRenderDrawColor(renderer, 255, 255, 255, objects[i]->color.a);
+			//SDL_RenderDrawPoint(renderer, objects[i]->AABB->center->x, objects[i]->AABB->center->y);	// Drawing the center of the collider
 		}
 		else {
 			// Draw point
-			SDL_SetRenderDrawColor(renderer, objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a); // Drawing a point
-			SDL_RenderDrawPoint(renderer, (int)objects[i].pos.x, (int)objects[i].pos.y);
+			SDL_SetRenderDrawColor(renderer, objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a); // Drawing a point
+			SDL_RenderDrawPoint(renderer, (int)objects[i]->pos.x, (int)objects[i]->pos.y);
 		}
 	}
 
