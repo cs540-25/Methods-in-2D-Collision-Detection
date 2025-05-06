@@ -50,5 +50,6 @@ private:
 
 	// Collision Functions
 	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not
+	int AABBCollision(Object& a, Object& b);			// Returns 1 if collision, 0 if not
 };
 

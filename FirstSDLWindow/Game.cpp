@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <limits>
+#include <cmath>
 
 size_t id_count = 0;
 
@@ -233,6 +234,17 @@ int Game::boundingCircleCollision(Object& a, Object& b) {
 	float dist2 = d.dot(d);		// This is just d^2
 	float radiusSum = a.radius + b.radius;
 	return dist2 <= radiusSum * radiusSum;	// is d^2 <= radiusSum^2?
+}
+
+int Game::AABBCollision(Object& a, Object& b) {
+	const vector* aCenter = &a.AABB->center;
+	const float* aRadi = a.AABB->radi;
+	const vector* bCenter = &b.AABB->center;
+	const float* bRadi = b.AABB->radi;
+	if (abs(aCenter->x - bCenter->x) > (aRadi[0] + bRadi[0])) return 0;
+	if (abs(aCenter->y - bCenter->y) > (aRadi[1] + bRadi[1])) return 0;
+
+	return 1;
 }
 
 int Game::render() {
