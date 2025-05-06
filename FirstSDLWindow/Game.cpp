@@ -5,7 +5,7 @@
 #include <limits>
 #include <cmath>
 
-#define FLAG_SET(flag) (((flag) & (flags)) == (flag))
+#define FLAG_IS_SET(flag) (((flag) & (flags)) == (flag))
 
 size_t id_count = 0;
 
@@ -199,6 +199,29 @@ int Game::update() {
 			}
 		}
 	}
+	else if (FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+		// Sort the object array in ascending order based on an axis (it doesn't matter which)
+		//	The axis will be chosen through sortAxis
+		//	cmpAABBPositions(const Object* a, const Object* b)
+		//		Comparison function
+		//		if sortAxis = x
+		//			minA = a.min.x
+		//			minB = b.min.x
+		//		etc...
+		//		if (minA < minB) return true
+		//		else return false
+		//	sort(objects.begin(), objects.end(), cmpAABBPositions)
+		// Check for overlapping colliders
+		//	AABBOverlap(const Object* a, const Object* b)
+		//		if min(a) <= min(b) <= max(a), there is overlap
+		//		else if min(a) <= max(b) <= max(a), there is overlap
+		//		otherwise, no overlap
+		// Check the overlapping colliders for collisions
+		// OPTIONAL (Could maybe add this as an additional collision detection method)
+		//	Calculate the variance (maxOverallPosition - minOverallPosition) of each axis
+		//	Update sortAxis to the axis with the most variance
+		
+	}
 
 	// Update Object Positions
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
@@ -279,14 +302,14 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) std::cout << "\tDrawing object " << i << std::endl;
 		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i]->pos.x, objects[i]->pos.y);
-		if (FLAG_SET(DEBUG_RENDERER | BRUTE_FORCE_AABB)) printf("\t\tCoordinateAABB = (%f, %f)\n", objects[i]->AABB->center->x, objects[i]->AABB->center->y);
+		if (FLAG_IS_SET(DEBUG_RENDERER | BRUTE_FORCE_AABB)) printf("\t\tCoordinateAABB = (%f, %f)\n", objects[i]->AABB->center->x, objects[i]->AABB->center->y);
 		if (objects[i]->isCircle) {	// Is the object just a point or a circle?
 			// Draw circle
 			SDL_SetRenderDrawColor(renderer, objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
 			DrawCircle(renderer, *objects[i]);
 			
 			// Drawing colliders
-			if (FLAG_SET(RENDER_COLLIDERS | BRUTE_FORCE_AABB)) {
+			if (FLAG_IS_SET(RENDER_COLLIDERS | BRUTE_FORCE_AABB)) {
 				SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a);
 				SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
 				SDL_Rect collider = objects[i]->AABB->toSDLRect();

@@ -5,13 +5,14 @@
 #include <chrono>
 
 enum Flags {
-	DEBUG_INPUT			= 1 << 0,
-	DEBUG_UPDATE		= 1 << 1,
-	DEBUG_RENDERER		= 1 << 2,
-	PRINT_METRICS		= 1 << 3,
-	RENDER_COLLIDERS	= 1 << 4,
-	BRUTE_FORCE_CIRCLE	= 1 << 5,
-	BRUTE_FORCE_AABB	= 1 << 6
+	DEBUG_INPUT				= 1 << 0,
+	DEBUG_UPDATE			= 1 << 1,
+	DEBUG_RENDERER			= 1 << 2,
+	PRINT_METRICS			= 1 << 3,
+	RENDER_COLLIDERS		= 1 << 4,
+	BRUTE_FORCE_CIRCLE		= 1 << 5,
+	BRUTE_FORCE_AABB		= 1 << 6,
+	SWEEP_AND_PRUNE_AABB	= 1 << 7
 };
 
 class Game {
