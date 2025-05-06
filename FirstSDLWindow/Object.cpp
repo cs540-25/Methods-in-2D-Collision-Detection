@@ -4,7 +4,7 @@
 int Object::createAABB() {	
 	AABB = new AxisAlignedBoundingBox;
 	if (isCircle) {
-		AABB->center = pos;
+		AABB->center = &pos;
 		AABB->radi[0] = radius;
 		AABB->radi[1] = radius;
 	}

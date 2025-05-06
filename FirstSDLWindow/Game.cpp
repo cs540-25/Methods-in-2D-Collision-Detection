@@ -5,6 +5,8 @@
 #include <limits>
 #include <cmath>
 
+#define FLAG_SET(flag) (((flag) & (flags)) == (flag))
+
 size_t id_count = 0;
 
 Game::Game(const int width, const int height, const int flags) {
@@ -272,14 +274,13 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) std::cout << "\tDrawing object " << i << std::endl;
 		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i]->pos.x, objects[i]->pos.y);
+		if (FLAG_SET(DEBUG_RENDERER | BRUTE_FORCE_AABB)) printf("\t\tCoordinateAABB = (%f, %f)\n", objects[i]->AABB->center->x, objects[i]->AABB->center->y);
 		if (objects[i]->isCircle) {	// Is the object just a point or a circle?
 			// Draw circle
 			SDL_SetRenderDrawColor(renderer, objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
 			DrawCircle(renderer, *objects[i]);
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, objects[i]->color.a);
-			printf("\t\tCoordinate = (%f, %f)\n", objects[i]->pos.x, objects[i]->pos.y);
-			printf("\t\tCoordinateAABB = (%f, %f)\n", objects[i]->AABB->center->x, objects[i]->AABB->center->y);
-			SDL_RenderDrawPoint(renderer, objects[i]->AABB->center->x, objects[i]->AABB->center->y);	// Drawing the center of the collider
+			//SDL_SetRenderDrawColor(renderer, 255, 255, 255, objects[i]->color.a);
+			//SDL_RenderDrawPoint(renderer, objects[i]->AABB->center->x, objects[i]->AABB->center->y);	// Drawing the center of the collider
 		}
 		else {
 			// Draw point
