@@ -214,7 +214,6 @@ void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
 	float ty = 1;
 	float error = (tx - diameter);
 
-	SDL_SetRenderDrawColor(renderer, circle.color.r, circle.color.g, circle.color.b, circle.color.a);
 	while (x >= y)
 	{
 		//  Each of the following renders an octant of the circle
@@ -275,7 +274,10 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i].pos.x, objects[i].pos.y);
 		if (objects[i].isCircle) {	// Is the object just a point or a circle?
 			// Draw circle
+			SDL_SetRenderDrawColor(renderer, objects[i].color.r, objects[i].color.g, objects[i].color.b, objects[i].color.a);
 			DrawCircle(renderer, objects[i]);
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, objects[i].color.a);
+			SDL_RenderDrawPoint(renderer, objects[i].AABB->center->x, objects[i].AABB->center->y);	// Drawing the center of the collider
 		}
 		else {
 			// Draw point
