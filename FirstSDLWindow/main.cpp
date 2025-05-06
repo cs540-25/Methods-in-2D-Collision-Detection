@@ -50,7 +50,7 @@ int main(int args, char* argv[]) {
 		Place all initial units on the board
 	*/
 
-	Game game(600, 400, BRUTE_FORCE_CIRCLE | PRINT_METRICS);
+	Game game(600, 400, 100, BRUTE_FORCE_CIRCLE | PRINT_METRICS);
 
 	/************************************/
 	//   G A M E   L O O P
