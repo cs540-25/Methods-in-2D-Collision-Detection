@@ -311,6 +311,13 @@ void Game::setBackgroundColor(unsigned char r, unsigned char g, unsigned char b,
 	backgroundColor.a = a;
 }
 
+void Game::setColliderColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+	colliderColor.r = r;
+	colliderColor.g = g;
+	colliderColor.b = b;
+	colliderColor.a = a;
+}
+
 bool Game::isRunning() {
 	return running;
 }

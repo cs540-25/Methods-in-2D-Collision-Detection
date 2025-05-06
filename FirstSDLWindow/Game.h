@@ -25,6 +25,7 @@ public:
 	void handleCollision(Object& a, Object& b);		// Changes the velocities and accelerations of the two objects to their new directions
 	int render();
 	void setBackgroundColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+	void setColliderColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 	bool isRunning();
 	size_t totalFrames;
 	double totalRuntime;						// Stored in seconds
