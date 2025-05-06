@@ -178,6 +178,20 @@ int Game::update() {
 			}
 		}
 	}
+	else if (BRUTE_FORCE_AABB & flags) {
+		for (size_t i = 0; i < objects.size(); i++) {
+			for (size_t j = i + 1; j < objects.size(); j++) {
+				if (AABBCollision(objects[i], objects[j])) {
+					//std::cout << "Collision moment\n";
+					objects[i].color.b = 0;
+					objects[i].color.g = 0;
+					objects[j].color.b = 0;
+					objects[j].color.g = 0;
+					handleCollision(objects[i], objects[j]);
+				}
+			}
+		}
+	}
 
 	// Update Object Positions
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
@@ -237,9 +251,9 @@ int Game::boundingCircleCollision(Object& a, Object& b) {
 }
 
 int Game::AABBCollision(Object& a, Object& b) {
-	const vector* aCenter = &a.AABB->center;
+	const vector* aCenter = a.AABB->center;
 	const float* aRadi = a.AABB->radi;
-	const vector* bCenter = &b.AABB->center;
+	const vector* bCenter = b.AABB->center;
 	const float* bRadi = b.AABB->radi;
 	if (abs(aCenter->x - bCenter->x) > (aRadi[0] + bRadi[0])) return 0;
 	if (abs(aCenter->y - bCenter->y) > (aRadi[1] + bRadi[1])) return 0;
