@@ -9,8 +9,9 @@ enum Flags {
 	DEBUG_UPDATE		= 1 << 1,
 	DEBUG_RENDERER		= 1 << 2,
 	PRINT_METRICS		= 1 << 3,
-	BRUTE_FORCE_CIRCLE	= 1 << 4,
-	BRUTE_FORCE_AABB	= 1 << 5
+	RENDER_COLLIDERS	= 1 << 4,
+	BRUTE_FORCE_CIRCLE	= 1 << 5,
+	BRUTE_FORCE_AABB	= 1 << 6
 };
 
 class Game {
