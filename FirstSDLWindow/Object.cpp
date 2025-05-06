@@ -55,3 +55,13 @@ Object::Object(float x, float y, float radius, size_t ident) {
 	// Colliders
 	AABB = NULL;
 }
+
+SDL_Rect AxisAlignedBoundingBox::toSDLRect()
+{
+	SDL_Rect ret;
+	ret.x = center->x - radi[0];	// These are supposed to be on the top left of the rectangle
+	ret.y = center->y - radi[1];
+	ret.w = radi[0] * 2;
+	ret.h = radi[1] * 2;
+	return ret;
+}

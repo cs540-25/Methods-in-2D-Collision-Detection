@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL_rect.h>
 
 struct Color {
 	unsigned char r, g, b, a;	// RGB and alpha for opacity
@@ -33,6 +34,7 @@ struct vector {		// 2D collection of X and Y values
 struct AxisAlignedBoundingBox {
 	vector* center;	// Pointer so that we can keep track of the rapidly changing positions
 	float radi[2];	// 1/2 of width and length
+	SDL_Rect toSDLRect();
 };
 
 
