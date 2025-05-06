@@ -34,7 +34,7 @@ private:
 	int windowHeight;
 	int windowWidth;
 	SDL_Renderer* renderer;
-	std::vector<Object> objects;
+	std::vector<Object*> objects;
 
 	std::chrono::steady_clock::time_point endOfLastUpdate;
 	float deltaTime;							// Deltatime is measured in seconds
