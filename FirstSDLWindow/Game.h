@@ -9,7 +9,8 @@ enum Flags {
 	DEBUG_UPDATE		= 1 << 1,
 	DEBUG_RENDERER		= 1 << 2,
 	PRINT_METRICS		= 1 << 3,
-	BRUTE_FORCE_CIRCLE	= 1 << 4
+	BRUTE_FORCE_CIRCLE	= 1 << 4,
+	BRUTE_FORCE_AABB	= 1 << 5
 };
 
 class Game {
@@ -33,7 +34,7 @@ private:
 	int windowHeight;
 	int windowWidth;
 	SDL_Renderer* renderer;
-	std::vector<Object> objects;
+	std::vector<Object*> objects;
 
 	std::chrono::steady_clock::time_point endOfLastUpdate;
 	float deltaTime;							// Deltatime is measured in seconds
@@ -49,5 +50,6 @@ private:
 
 	// Collision Functions
 	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not
+	int AABBCollision(Object& a, Object& b);			// Returns 1 if collision, 0 if not
 };
 

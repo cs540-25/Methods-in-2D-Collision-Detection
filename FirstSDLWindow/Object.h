@@ -25,9 +25,14 @@ struct vector {		// 2D collection of X and Y values
 	vector operator* (const float& in) {
 		return vector(x * in, y * in);
 	}
-	float dot(const vector& in) {
+	float dot(const vector& in) {	// Dot product
 		return x * in.x + y * in.y;
 	}
+};
+
+struct AxisAlignedBoundingBox {
+	vector* center;	// Pointer so that we can keep track of the rapidly changing positions
+	float radi[2];	// 1/2 of width and length
 };
 
 
@@ -45,6 +50,11 @@ public:
 	bool isCircle;
 	float radius;
 
+	// Colliders
+	AxisAlignedBoundingBox* AABB;
+
+	int createAABB();	// Returns 1 on a successful creation, 0 on failure
+	int destroyAABB();	// Returns 1 on a successful deletion
 	Object(float x, float y, size_t ident);
 	Object(float x, float y, float radius, size_t ident);
 };
