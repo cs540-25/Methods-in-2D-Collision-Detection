@@ -75,3 +75,11 @@ vector AxisAlignedBoundingBox::max()
 {
 	return vector(center->x + radi[0], center->y + radi[1]);
 }
+
+Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+	this->r = r;
+	this->g = g;
+	this->b = b;
+	this->a = a;
+}
