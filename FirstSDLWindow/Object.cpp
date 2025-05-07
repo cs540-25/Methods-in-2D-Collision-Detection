@@ -29,8 +29,6 @@ Object::Object(float x, float y, size_t ident) {
 	radius = 0.5;
 	id = ident;
 	mass = 1;
-	isColliding = false;
-	isOverlapping = false;
 
 	// Colliders
 	AABB = NULL;
@@ -46,8 +44,6 @@ Object::Object(float x, float y, float radius, size_t ident) {
 	this->radius = radius;
 	id = ident;	
 	mass = 1;
-	isColliding = false;
-	isOverlapping = false;
 
 	// Colliders
 	AABB = NULL;
