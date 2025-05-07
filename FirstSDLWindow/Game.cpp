@@ -34,6 +34,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 	minFPS = std::numeric_limits<float>::infinity();
 	maxFPS = 0;
 
+	sortAxis = 'x';
 	// Board init
 	for (int i = 0; i < numObjects; i++) {	// Adding test objects
 		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
@@ -270,6 +271,20 @@ void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
 			error += (tx - diameter);
 		}
 	}
+}
+
+bool Game::cmpAABBPositions(const Object* a, const Object* b) {	// For sorting the AABB objects
+	float minA, minB;
+	if (sortAxis == 'x') {
+		minA = a->AABB->min().x;
+		minB = b->AABB->min().x;
+	}
+	else {	// sortAxis is y
+		minA = a->AABB->min().y;
+		minB = b->AABB->min().y;
+	}
+	if (minA < minB) return true;
+	else return false;
 }
 
 int Game::boundingCircleCollision(Object& a, Object& b) {

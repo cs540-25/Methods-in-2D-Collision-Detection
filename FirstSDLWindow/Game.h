@@ -51,6 +51,10 @@ private:
 	size_t countedFrames;
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
+	
+	// Sweep and prune members
+	char sortAxis;		// This should only ever be 'x' or 'y'
+	bool cmpAABBPositions(const Object* a, const Object* b);
 
 	// Collision Functions
 	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not
