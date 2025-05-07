@@ -50,7 +50,7 @@ int main(int args, char* argv[]) {
 		Place all initial units on the board
 	*/
 
-	Game game(600, 400, 100, BRUTE_FORCE_AABB | PRINT_METRICS | RENDER_COLLIDERS);
+	Game game(600, 400, 100, SWEEP_AND_PRUNE_AABB | PRINT_METRICS | RENDER_COLLIDERS);
 
 	/************************************/
 	//   G A M E   L O O P

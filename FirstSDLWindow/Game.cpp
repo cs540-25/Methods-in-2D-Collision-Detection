@@ -4,10 +4,12 @@
 #include <cstdlib>
 #include <limits>
 #include <cmath>
+#include <algorithm>
 
-#define FLAG_SET(flag) (((flag) & (flags)) == (flag))
+#define FLAG_IS_SET(flag) (((flag) & (flags)) == (flag))
 
 size_t id_count = 0;
+char Game::sortAxis = 'x';
 
 Game::Game(const int width, const int height, const int numObjects, const int flags) {
 	this->flags = flags;
@@ -19,14 +21,6 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 	windowWidth = width;
 	windowHeight = height;
 	renderer = SDL_CreateRenderer(window, -1, 0);
-	backgroundColor.r = 0;
-	backgroundColor.g = 0;
-	backgroundColor.b = 0;
-	backgroundColor.a = 255;
-	colliderColor.r = 0;
-	colliderColor.g = 255;
-	colliderColor.b = 0;
-	colliderColor.a = 255;
 	totalFrames = 0;
 	totalRuntime = 0;
 	fpsTimer = 0;
@@ -42,7 +36,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 		test->acc.y = (float) 500;
 		
 		// Adding colliders
-		if (flags & BRUTE_FORCE_AABB) {
+		if (FLAG_IS_SET(BRUTE_FORCE_AABB) | FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
 			test->createAABB();
 		}
 		
@@ -179,7 +173,7 @@ int Game::update() {
 					objects[i]->color.b = 0;
 					objects[i]->color.g = 0;
 					objects[j]->color.b = 0;
-					objects[j]->color.g = 0;
+					objects[j]->color.a = 255;
 					handleCollision(*objects[i], *objects[j]);
 				}
 			}
@@ -193,11 +187,48 @@ int Game::update() {
 					objects[i]->color.b = 0;
 					objects[i]->color.g = 0;
 					objects[j]->color.b = 0;
-					objects[j]->color.g = 0;
+					objects[j]->color.a = 255;
 					handleCollision(*objects[i], *objects[j]);
 				}
 			}
 		}
+	}
+	else if (FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+		// Sort the object array in ascending order based on an axis (it doesn't matter which)
+		//	The axis will be chosen through sortAxis
+		//	cmpAABBPositions(const Object* a, const Object* b)
+		//		Comparison function
+		//		if sortAxis = x
+		//			minA = a.min.x
+		//			minB = b.min.x
+		//		etc...
+		//		if (minA < minB) return true
+		//		else return false
+		//	sort(objects.begin(), objects.end(), cmpAABBPositions)
+		// Check for overlapping colliders
+		//	AABBOverlap(const Object* a, const Object* b)
+		//		if min(a) <= min(b) <= max(a), there is overlap
+		//		else if min(a) <= max(b) <= max(a), there is overlap
+		//		otherwise, no overlap
+		// Check the overlapping colliders for collisions
+		// OPTIONAL (Could maybe add this as an additional collision detection method)
+		//	Calculate the variance (maxOverallPosition - minOverallPosition) of each axis
+		//	Update sortAxis to the axis with the most variance
+		std::sort(objects.begin(), objects.end(), cmpAABBPositions);
+		//for (size_t i = 0; i < objects.size(); i++) {
+		//	std::cout << objects[i]->AABB->min().x << std::endl;
+		//}
+		for (size_t i = 0; i < objects.size(); i++) {
+			for (size_t j = i + 1; j < objects.size(); j++) {	// Only looking at objects after the 'i'th object as to not waste time
+				if (AABBOverlap(objects[i], objects[j])) {
+					objects[i]->lastOverlapFrame = totalFrames;
+					if (AABBCollision(*objects[i], *objects[j])) {
+						handleCollision(*objects[i], *objects[j]);
+					}
+				}
+			}
+		}
+
 	}
 
 	// Update Object Positions
@@ -249,11 +280,50 @@ void Game::DrawCircle(SDL_Renderer* renderer, Object& circle) {
 	}
 }
 
+bool Game::cmpAABBPositions(const Object* a, const Object* b) {	// For sorting the AABB objects
+	float minA, minB;
+	if (sortAxis == 'x') {
+		minA = a->AABB->min().x;
+		minB = b->AABB->min().x;
+	}
+	else {	// sortAxis is y
+		minA = a->AABB->min().y;
+		minB = b->AABB->min().y;
+	}
+	return (minA < minB);
+}
+
+int Game::AABBOverlap(Object* a, Object* b) {
+	float minA, maxA, minB, maxB;
+	if (sortAxis == 'x') {
+		minA = a->AABB->min().x;
+		maxA = a->AABB->max().x;
+		minB = b->AABB->min().x;
+		maxB = b->AABB->max().x;
+	}
+	else {	// sortAxis == 'y'
+		minA = a->AABB->min().y;
+		maxA = a->AABB->max().y;
+		minB = b->AABB->min().y;
+		maxB = b->AABB->max().y;
+	}
+	if (maxA >= minB && maxB >= minA) {
+		a->lastOverlapFrame = totalFrames;
+		b->lastOverlapFrame = totalFrames;
+		return 1;
+	}
+	return 0;
+}
+
 int Game::boundingCircleCollision(Object& a, Object& b) {
 	vector d = a.pos - b.pos;	// Distance between centers
 	float dist2 = d.dot(d);		// This is just d^2
 	float radiusSum = a.radius + b.radius;
-	return dist2 <= radiusSum * radiusSum;	// is d^2 <= radiusSum^2?
+	if (dist2 <= radiusSum * radiusSum) {
+		a.lastCollisionFrame = totalFrames;
+		b.lastCollisionFrame = totalFrames;
+		return true;	// is d^2 <= radiusSum^2?
+	}
 }
 
 int Game::AABBCollision(Object& a, Object& b) {
@@ -264,7 +334,17 @@ int Game::AABBCollision(Object& a, Object& b) {
 	if (abs(aCenter->x - bCenter->x) > (aRadi[0] + bRadi[0])) return 0;
 	if (abs(aCenter->y - bCenter->y) > (aRadi[1] + bRadi[1])) return 0;
 
+	a.lastCollisionFrame = totalFrames;
+	b.lastCollisionFrame = totalFrames;
 	return 1;
+}
+
+int Game::isColliding(Object* object) {
+	return (object->lastCollisionFrame == totalFrames);
+}
+
+int Game::isOverlapping(Object* object) {
+	return (object->lastOverlapFrame == totalFrames);
 }
 
 int Game::render() {
@@ -279,18 +359,34 @@ int Game::render() {
 		if (DEBUG_RENDERER & flags) std::cout << "\tDrawing object " << i << std::endl;
 		if (DEBUG_RENDERER & flags) printf("\t\tColor = (%d, %d, %d, %d)\n", objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
 		if (DEBUG_RENDERER & flags) printf("\t\tCoordinate = (%f, %f)\n", objects[i]->pos.x, objects[i]->pos.y);
-		if (FLAG_SET(DEBUG_RENDERER | BRUTE_FORCE_AABB)) printf("\t\tCoordinateAABB = (%f, %f)\n", objects[i]->AABB->center->x, objects[i]->AABB->center->y);
+		if (FLAG_IS_SET(DEBUG_RENDERER | BRUTE_FORCE_AABB)) printf("\t\tCoordinateAABB = (%f, %f)\n", objects[i]->AABB->center->x, objects[i]->AABB->center->y);
 		if (objects[i]->isCircle) {	// Is the object just a point or a circle?
 			// Draw circle
 			SDL_SetRenderDrawColor(renderer, objects[i]->color.r, objects[i]->color.g, objects[i]->color.b, objects[i]->color.a);
 			DrawCircle(renderer, *objects[i]);
 			
 			// Drawing colliders
-			if (FLAG_SET(RENDER_COLLIDERS | BRUTE_FORCE_AABB)) {
-				SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a);
-				SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
-				SDL_Rect collider = objects[i]->AABB->toSDLRect();
-				SDL_RenderDrawRect(renderer, &collider);
+			if (FLAG_IS_SET(RENDER_COLLIDERS)) {
+				if (FLAG_IS_SET(BRUTE_FORCE_AABB)) {
+					SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a);
+					SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
+					SDL_Rect collider = objects[i]->AABB->toSDLRect();
+					SDL_RenderDrawRect(renderer, &collider);
+				}
+				if (FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+					if (isColliding(objects[i])) {
+						SDL_SetRenderDrawColor(renderer, collisionColor.r, collisionColor.g, collisionColor.b, collisionColor.a);	// Change color to red if colliding
+					}
+					else if (isOverlapping(objects[i])) {
+						SDL_SetRenderDrawColor(renderer, overlapColor.r, overlapColor.g, overlapColor.b, overlapColor.a);	// Change color to light blue if overlapping
+					}
+					else {
+						SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a); // Change color to default color for no collisions or overlap
+					}
+					SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
+					SDL_Rect collider = objects[i]->AABB->toSDLRect();
+					SDL_RenderDrawRect(renderer, &collider);
+				}
 			}
 		}
 		else {

@@ -23,10 +23,6 @@ int Object::destroyAABB() {
 Object::Object(float x, float y, size_t ident) {
 	pos.x = x;
 	pos.y = y;
-	color.r = 255;
-	color.g = 255;
-	color.b = 255;
-	color.a = 255;
 	isVisible = true;
 	isStatic = false;
 	isCircle = false;
@@ -41,10 +37,7 @@ Object::Object(float x, float y, size_t ident) {
 Object::Object(float x, float y, float radius, size_t ident) {
 	pos.x = x;
 	pos.y = y;
-	color.r = 255;
-	color.g = 255;
-	color.b = 255;
-	color.a = 255;
+	color = Color(255, 255, 255, 255);
 	isVisible = true;
 	isStatic = false;
 	isCircle = true;
@@ -64,4 +57,31 @@ SDL_Rect AxisAlignedBoundingBox::toSDLRect()
 	ret.w = radi[0] * 2;
 	ret.h = radi[1] * 2;
 	return ret;
+}
+
+vector AxisAlignedBoundingBox::min()
+{
+	return vector(center->x - radi[0], center->y - radi[1]);
+}
+
+vector AxisAlignedBoundingBox::max()
+{
+	return vector(center->x + radi[0], center->y + radi[1]);
+}
+
+Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+	this->r = r;
+	this->g = g;
+	this->b = b;
+	this->a = a;
+}
+
+Color& Color::operator=(const Color& in)
+{
+	r = in.r;
+	g = in.g;
+	b = in.b;
+	a = in.a;
+	return (*this);
 }

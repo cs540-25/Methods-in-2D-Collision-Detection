@@ -3,6 +3,8 @@
 
 struct Color {
 	unsigned char r, g, b, a;	// RGB and alpha for opacity
+	Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+	Color& operator= (const Color& in);
 };
 
 struct vector {		// 2D collection of X and Y values
@@ -35,6 +37,8 @@ struct AxisAlignedBoundingBox {
 	vector* center;	// Pointer so that we can keep track of the rapidly changing positions
 	float radi[2];	// 1/2 of width and length
 	SDL_Rect toSDLRect();
+	vector min();	// Returns the top-left point
+	vector max();	// Returns the bottom-right point
 };
 
 
@@ -45,12 +49,16 @@ public:
 	vector acc;
 	bool isVisible;
 	bool isStatic;
-	Color color;	// Automatically set to white
+	Color color = Color(255, 255, 255, 255);	// Automatically set to white
 	size_t id;
 	int mass;		// This is probably always going to be 1, but we can change this for fun
 
 	bool isCircle;
 	float radius;
+
+	// Tracking when we previously collided
+	size_t lastCollisionFrame = 0;
+	size_t lastOverlapFrame = 0;
 
 	// Colliders
 	AxisAlignedBoundingBox* AABB;
