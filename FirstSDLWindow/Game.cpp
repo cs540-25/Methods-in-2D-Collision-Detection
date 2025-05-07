@@ -4,10 +4,12 @@
 #include <cstdlib>
 #include <limits>
 #include <cmath>
+#include <algorithm>
 
 #define FLAG_IS_SET(flag) (((flag) & (flags)) == (flag))
 
 size_t id_count = 0;
+char Game::sortAxis = 'x';
 
 Game::Game(const int width, const int height, const int numObjects, const int flags) {
 	this->flags = flags;
@@ -34,7 +36,6 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 	minFPS = std::numeric_limits<float>::infinity();
 	maxFPS = 0;
 
-	sortAxis = 'x';
 	// Board init
 	for (int i = 0; i < numObjects; i++) {	// Adding test objects
 		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
@@ -43,7 +44,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 		test->acc.y = (float) 500;
 		
 		// Adding colliders
-		if (flags & BRUTE_FORCE_AABB) {
+		if (FLAG_IS_SET(BRUTE_FORCE_AABB) | FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
 			test->createAABB();
 		}
 		
@@ -221,7 +222,11 @@ int Game::update() {
 		// OPTIONAL (Could maybe add this as an additional collision detection method)
 		//	Calculate the variance (maxOverallPosition - minOverallPosition) of each axis
 		//	Update sortAxis to the axis with the most variance
-		
+		std::sort(objects.begin(), objects.end(), cmpAABBPositions);
+		//for (size_t i = 0; i < objects.size(); i++) {
+		//	std::cout << objects[i]->AABB->min().x << std::endl;
+		//}
+
 	}
 
 	// Update Object Positions
@@ -283,8 +288,7 @@ bool Game::cmpAABBPositions(const Object* a, const Object* b) {	// For sorting t
 		minA = a->AABB->min().y;
 		minB = b->AABB->min().y;
 	}
-	if (minA < minB) return true;
-	else return false;
+	return (minA < minB);
 }
 
 int Game::boundingCircleCollision(Object& a, Object& b) {
