@@ -324,6 +324,7 @@ int Game::boundingCircleCollision(Object& a, Object& b) {
 		b.lastCollisionFrame = totalFrames;
 		return true;	// is d^2 <= radiusSum^2?
 	}
+	return false;
 }
 
 int Game::AABBCollision(Object& a, Object& b) {
