@@ -42,7 +42,7 @@ private:
 	SDL_Renderer* renderer;
 	std::vector<Object*> objects;
 
-	std::chrono::steady_clock::time_point endOfLastUpdate;
+	std::chrono::steady_clock::time_point lastTime;
 	float deltaTime;							// Deltatime is measured in seconds
 	int flags;
 	bool running;
@@ -50,6 +50,7 @@ private:
 	// Metrics
 	float minFPS, maxFPS;
 	float fpsTimer;								// Tracks the elapsed time since last fps evaluation
+	float fpsTimerInterval = 0.05;				// How many seconds often to print the FPS
 	size_t countedFrames;						// This could also be called currentFrame
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)

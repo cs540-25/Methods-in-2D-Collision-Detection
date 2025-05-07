@@ -30,7 +30,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 
 	// Board init
 	for (int i = 0; i < numObjects; i++) {	// Adding test objects
-		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 10, id_count);
+		Object* test = new Object(float(rand() % windowWidth), float(rand() % windowHeight), 5, id_count);
 		id_count += 1;
 		test->acc.x = (float)(rand() % 100 + 1) / 20;
 		test->acc.y = (float) 500;
@@ -51,7 +51,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 	test1.acc.x = (float)-30;
 	test1.acc.y = (float)-500;
 	objects.push_back(test1);*/
-	endOfLastUpdate = std::chrono::steady_clock::now();		// For deltatime calculations
+	lastTime = std::chrono::steady_clock::now();		// For deltatime calculations
 	deltaTime = 0;
 }
 
@@ -128,7 +128,6 @@ void Game::updatePositions() {
 			// Movement
 			objects[i]->vel = objects[i]->vel + objects[i]->acc * deltaTime;
 			objects[i]->pos = objects[i]->pos + objects[i]->vel * deltaTime;
-			objects[i]->color.a -= 1;
 
 			// Collision with edges
 			if (objects[i]->pos.x + objects[i]->radius >= windowWidth || objects[i]->pos.x - objects[i]->radius < 0) {	// on x axis
@@ -143,8 +142,9 @@ void Game::updatePositions() {
 
 int Game::update() {
 	// Deltatime
-	auto start = std::chrono::steady_clock::now();
-	deltaTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(start - endOfLastUpdate).count() / 1000;
+	auto currentTime = std::chrono::steady_clock::now();
+	deltaTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(currentTime - lastTime).count() / 1000;
+	lastTime = currentTime;
 	if (DEBUG_UPDATE & flags) std::cout << "Deltatime = " << deltaTime << " seconds" << std::endl;
 
 	// Metrics
@@ -152,12 +152,12 @@ int Game::update() {
 	countedFrames++;	// This isn't efficient
 	totalRuntime += deltaTime;
 	fpsTimer += deltaTime;
-	if (fpsTimer >= 0.05) {
+	if (fpsTimer >= 0.5) {
 		float fps = countedFrames / fpsTimer;
 		if (fps > maxFPS)	maxFPS = fps;
 		if (fps < minFPS)	minFPS = fps;
 		if (PRINT_METRICS & flags) {
-			std::cout << countedFrames / fpsTimer << std::endl;
+			std::cout << fps << std::endl;
 		}
 		fpsTimer = 0;
 		countedFrames = 0;
@@ -238,7 +238,6 @@ int Game::update() {
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
 	updatePositions();
 
-	endOfLastUpdate = std::chrono::steady_clock::now();
 	return 0;
 }
 
