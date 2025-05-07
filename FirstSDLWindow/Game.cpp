@@ -221,15 +221,10 @@ int Game::update() {
 		for (size_t i = 0; i < objects.size(); i++) {
 			for (size_t j = i + 1; j < objects.size(); j++) {	// Only looking at objects after the 'i'th object as to not waste time
 				if (AABBOverlap(objects[i], objects[j])) {
-					objects[i]->color = Color(0, 128, 128, 255);
-					objects[j]->color = Color(0, 128, 128, 255);
+					objects[i]->lastOverlapFrame = totalFrames;
 					if (AABBCollision(*objects[i], *objects[j])) {
 						handleCollision(*objects[i], *objects[j]);
 					}
-				}
-				else {
-					objects[i]->color = Color(255, 255, 255, 255);
-					objects[i]->color = Color(255, 255, 255, 255);
 				}
 			}
 		}
@@ -298,7 +293,7 @@ bool Game::cmpAABBPositions(const Object* a, const Object* b) {	// For sorting t
 	return (minA < minB);
 }
 
-int Game::AABBOverlap(const Object* a, const Object* b) {
+int Game::AABBOverlap(Object* a, Object* b) {
 	float minA, maxA, minB, maxB;
 	if (sortAxis == 'x') {
 		minA = a->AABB->min().x;
@@ -312,7 +307,11 @@ int Game::AABBOverlap(const Object* a, const Object* b) {
 		minB = b->AABB->min().y;
 		maxB = b->AABB->max().y;
 	}
-	if (maxA >= minB && maxB >= minA) return 1;
+	if (maxA >= minB && maxB >= minA) {
+		a->lastOverlapFrame = totalFrames;
+		b->lastOverlapFrame = totalFrames;
+		return 1;
+	}
 	return 0;
 }
 
@@ -320,7 +319,11 @@ int Game::boundingCircleCollision(Object& a, Object& b) {
 	vector d = a.pos - b.pos;	// Distance between centers
 	float dist2 = d.dot(d);		// This is just d^2
 	float radiusSum = a.radius + b.radius;
-	return dist2 <= radiusSum * radiusSum;	// is d^2 <= radiusSum^2?
+	if (dist2 <= radiusSum * radiusSum) {
+		a.lastCollisionFrame = totalFrames;
+		b.lastCollisionFrame = totalFrames;
+		return true;	// is d^2 <= radiusSum^2?
+	}
 }
 
 int Game::AABBCollision(Object& a, Object& b) {
@@ -331,7 +334,17 @@ int Game::AABBCollision(Object& a, Object& b) {
 	if (abs(aCenter->x - bCenter->x) > (aRadi[0] + bRadi[0])) return 0;
 	if (abs(aCenter->y - bCenter->y) > (aRadi[1] + bRadi[1])) return 0;
 
+	a.lastCollisionFrame = totalFrames;
+	b.lastCollisionFrame = totalFrames;
 	return 1;
+}
+
+int Game::isColliding(Object* object) {
+	return (object->lastCollisionFrame == totalFrames);
+}
+
+int Game::isOverlapping(Object* object) {
+	return (object->lastOverlapFrame == totalFrames);
 }
 
 int Game::render() {

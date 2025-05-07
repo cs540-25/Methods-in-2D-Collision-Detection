@@ -48,17 +48,19 @@ private:
 	// Metrics
 	float minFPS, maxFPS;
 	float fpsTimer;								// Tracks the elapsed time since last fps evaluation
-	size_t countedFrames;
+	size_t countedFrames;						// This could also be called currentFrame
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
 	
 	// Sweep and prune members
 	static char sortAxis;		// This should only ever be 'x' or 'y'
 	static bool cmpAABBPositions(const Object* a, const Object* b);
-	static int AABBOverlap(const Object* a, const Object* b);	// Returns 1 if overlap, otherwise returns 0
+	int AABBOverlap(Object* a, Object* b);	// Returns 1 if overlap, otherwise returns 0; updates the lastOverlapFrame member in objects
 
 	// Collision Functions
-	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not
-	int AABBCollision(Object& a, Object& b);			// Returns 1 if collision, 0 if not
+	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not; updates the lastCollisionFrame member in objects
+	int AABBCollision(Object& a, Object& b);			// Returns 1 if collision, 0 if not; updates the lastCollisionFrame member in objects
+	int isColliding(Object* object);					// Returns 1 if there was a collision this frame;
+	int isOverlapping(Object* object);					// Returns 1 if the object is overlapping with another this frame (only updated for SWEEP_AND_PRUNE_AABB)
 };
 

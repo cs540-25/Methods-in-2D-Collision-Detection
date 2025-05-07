@@ -56,10 +56,12 @@ public:
 	bool isCircle;
 	float radius;
 
+	// Tracking when we previously collided
+	size_t lastCollisionFrame = 0;
+	size_t lastOverlapFrame = 0;
+
 	// Colliders
 	AxisAlignedBoundingBox* AABB;
-	bool isColliding;
-	bool isOverlapping;
 
 	int createAABB();	// Returns 1 on a successful creation, 0 on failure
 	int destroyAABB();	// Returns 1 on a successful deletion
