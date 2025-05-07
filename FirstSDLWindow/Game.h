@@ -32,8 +32,8 @@ public:
 	double totalRuntime;						// Stored in seconds
 
 private:
-	Color backgroundColor;						// The default color for the background is black
-	Color colliderColor;
+	Color backgroundColor = Color(0,0,0,0);						// The default color for the background is black
+	Color colliderColor = Color(0,255,0,255);
 	SDL_Window* window;
 	int windowHeight;
 	int windowWidth;
@@ -55,6 +55,7 @@ private:
 	// Sweep and prune members
 	static char sortAxis;		// This should only ever be 'x' or 'y'
 	static bool cmpAABBPositions(const Object* a, const Object* b);
+	static int AABBOverlap(const Object* a, const Object* b);	// Returns 1 if overlap, otherwise returns 0
 
 	// Collision Functions
 	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not

@@ -49,7 +49,7 @@ public:
 	vector acc;
 	bool isVisible;
 	bool isStatic;
-	Color color;	// Automatically set to white
+	Color color = Color(255, 255, 255, 255);	// Automatically set to white
 	size_t id;
 	int mass;		// This is probably always going to be 1, but we can change this for fun
 
@@ -58,6 +58,8 @@ public:
 
 	// Colliders
 	AxisAlignedBoundingBox* AABB;
+	bool isColliding;
+	bool isOverlapping;
 
 	int createAABB();	// Returns 1 on a successful creation, 0 on failure
 	int destroyAABB();	// Returns 1 on a successful deletion

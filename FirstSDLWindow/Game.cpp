@@ -21,14 +21,6 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 	windowWidth = width;
 	windowHeight = height;
 	renderer = SDL_CreateRenderer(window, -1, 0);
-	backgroundColor.r = 0;
-	backgroundColor.g = 0;
-	backgroundColor.b = 0;
-	backgroundColor.a = 255;
-	colliderColor.r = 0;
-	colliderColor.g = 255;
-	colliderColor.b = 0;
-	colliderColor.a = 255;
 	totalFrames = 0;
 	totalRuntime = 0;
 	fpsTimer = 0;
@@ -181,7 +173,7 @@ int Game::update() {
 					objects[i]->color.b = 0;
 					objects[i]->color.g = 0;
 					objects[j]->color.b = 0;
-					objects[j]->color.g = 0;
+					objects[j]->color.a = 255;
 					handleCollision(*objects[i], *objects[j]);
 				}
 			}
@@ -195,7 +187,7 @@ int Game::update() {
 					objects[i]->color.b = 0;
 					objects[i]->color.g = 0;
 					objects[j]->color.b = 0;
-					objects[j]->color.g = 0;
+					objects[j]->color.a = 255;
 					handleCollision(*objects[i], *objects[j]);
 				}
 			}
@@ -226,6 +218,21 @@ int Game::update() {
 		//for (size_t i = 0; i < objects.size(); i++) {
 		//	std::cout << objects[i]->AABB->min().x << std::endl;
 		//}
+		for (size_t i = 0; i < objects.size(); i++) {
+			for (size_t j = i + 1; j < objects.size(); j++) {	// Only looking at objects after the 'i'th object as to not waste time
+				if (AABBOverlap(objects[i], objects[j])) {
+					objects[i]->color = Color(0, 128, 128, 255);
+					objects[j]->color = Color(0, 128, 128, 255);
+					if (AABBCollision(*objects[i], *objects[j])) {
+						handleCollision(*objects[i], *objects[j]);
+					}
+				}
+				else {
+					objects[i]->color = Color(255, 255, 255, 255);
+					objects[i]->color = Color(255, 255, 255, 255);
+				}
+			}
+		}
 
 	}
 
@@ -289,6 +296,24 @@ bool Game::cmpAABBPositions(const Object* a, const Object* b) {	// For sorting t
 		minB = b->AABB->min().y;
 	}
 	return (minA < minB);
+}
+
+int Game::AABBOverlap(const Object* a, const Object* b) {
+	float minA, maxA, minB, maxB;
+	if (sortAxis == 'x') {
+		minA = a->AABB->min().x;
+		maxA = a->AABB->max().x;
+		minB = b->AABB->min().x;
+		maxB = b->AABB->max().x;
+	}
+	else {	// sortAxis == 'y'
+		minA = a->AABB->min().y;
+		maxA = a->AABB->max().y;
+		minB = b->AABB->min().y;
+		maxB = b->AABB->max().y;
+	}
+	if (maxA >= minB && maxB >= minA) return 1;
+	return 0;
 }
 
 int Game::boundingCircleCollision(Object& a, Object& b) {
