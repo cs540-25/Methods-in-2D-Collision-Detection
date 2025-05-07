@@ -83,3 +83,12 @@ Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 	this->b = b;
 	this->a = a;
 }
+
+Color& Color::operator=(const Color& in)
+{
+	r = in.r;
+	g = in.g;
+	b = in.b;
+	a = in.a;
+	return (*this);
+}

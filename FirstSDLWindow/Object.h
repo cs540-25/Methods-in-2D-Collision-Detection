@@ -4,6 +4,7 @@
 struct Color {
 	unsigned char r, g, b, a;	// RGB and alpha for opacity
 	Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+	Color& operator= (const Color& in);
 };
 
 struct vector {		// 2D collection of X and Y values
