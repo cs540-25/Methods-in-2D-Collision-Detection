@@ -34,6 +34,8 @@ public:
 private:
 	Color backgroundColor = Color(0,0,0,0);						// The default color for the background is black
 	Color colliderColor = Color(0,255,0,255);
+	Color collisionColor = Color(255, 0, 0, 255);
+	Color overlapColor = Color(0, 100, 128, 255);
 	SDL_Window* window;
 	int windowHeight;
 	int windowWidth;
