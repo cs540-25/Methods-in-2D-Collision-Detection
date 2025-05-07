@@ -63,8 +63,8 @@ int main(int args, char* argv[]) {
 	*/
 
 	std::vector<int> flags;
-	flags.push_back(BRUTE_FORCE_AABB | PRINT_METRICS | RENDER_COLLIDERS | DEBUG_UPDATE);
-	flags.push_back(SWEEP_AND_PRUNE_AABB | PRINT_METRICS | RENDER_COLLIDERS | DEBUG_UPDATE);
+	flags.push_back(BRUTE_FORCE_AABB | PRINT_METRICS | RENDER_COLLIDERS);
+	flags.push_back(SWEEP_AND_PRUNE_AABB | PRINT_METRICS | RENDER_COLLIDERS);
 
 	for (size_t i = 0; i < flags.size(); i++) {
 		Game game(600, 400, 1000, flags[i]);
