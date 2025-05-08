@@ -52,7 +52,7 @@ private:
 	// Metrics
 	float minFPS, maxFPS;
 	float fpsTimer;								// Tracks the elapsed time since last fps evaluation
-	float fpsTimerInterval = 0.05;				// How many seconds often to print the FPS
+	float fpsTimerInterval = 0.05f;				// How many seconds often to print the FPS
 	size_t countedFrames;						// This could also be called currentFrame
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
