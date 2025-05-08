@@ -1,5 +1,7 @@
 #include "UniformGrid.h"
 
+UniformGrid::UniformGrid() {}	// Do nothing
+
 UniformGrid::UniformGrid(int cellWidth, int cellHeight, int windowWidth, int windowHeight)
 {
 	int numXCells = windowWidth / cellWidth;
