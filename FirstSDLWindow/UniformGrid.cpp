@@ -23,15 +23,20 @@ vector UniformGrid::getCell(const vector& pos)
 //	for (i = min.x; i <= max.x; i++)
 //		for (j = min.y; j <= max.y; j++)
 //			uniformGrid[i][j].gridArray.push_back(a)
-void UniformGrid::setCells(Object* a)
+std::set<Object*> UniformGrid::setCellsAndScoutCollision(Object* a)	// Returns a set of to the objects that could be a collision; otherwise returns NULL
 {
 	vector min = getCell(a->AABB->min());
 	vector max = getCell(a->AABB->max());
+	std::set<Object*> ret(0, NULL);
 	for (int i = (int)min.x; i <= (int)max.x; i++) {
-		for (int j = (int)min.y; j < (int)max.y; j++) {
+		for (int j = (int)min.y; j <= (int)max.y; j++) {
+			for (auto k = 0; k < uniformGrid[i][j].size(); k++) {
+				ret.insert(uniformGrid[i][j][k]);
+			}
 			uniformGrid[i][j].push_back(a);
 		}
 	}
+	return ret;
 }
 
 void UniformGrid::clearCells()
