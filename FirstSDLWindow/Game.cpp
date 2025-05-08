@@ -66,7 +66,7 @@ Game::~Game() {
 		printf("Maximum Framerate:     %20.10f\n", maxFPS);
 		printf("Minimum Framerate:     %20.10f\n", minFPS);
 		printf("Framerate Variability: %20.10f\n", maxFPS - minFPS);
-		printf("Framerate per Object:  %20.10f\n", (totalFrames / totalRuntime) / objects.size());
+		printf("Frames per Object:  %20.10f\n", totalFrames / (float)objects.size());
 		//std::string response;
 		//std::cout << "Enter any character to close: ";
 		//std::cin >> response;
@@ -153,6 +153,9 @@ int Game::update() {
 	totalFrames++;
 	countedFrames++;	// This isn't efficient
 	totalRuntime += deltaTime;
+	if (totalRuntime >= 10.0) {
+		running = false;
+	}
 	fpsTimer += deltaTime;
 	if (fpsTimer >= 0.5) {
 		float fps = countedFrames / fpsTimer;
