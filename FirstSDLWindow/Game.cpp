@@ -5,6 +5,7 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <set>
 
 #define FLAG_IS_SET(flag) (((flag) & (flags)) == (flag))
 
@@ -234,7 +235,12 @@ int Game::update() {
 	else if (FLAG_IS_SET(UNIFORM_GRID_AABB)) {
 		uniformGrid.clearCells();
 		for (size_t i = 0; i < objects.size(); i++) {
-			uniformGrid.setCellsAndScoutCollision(objects[i]);
+			std::set<Object*> possibleCollisions = uniformGrid.setCellsAndScoutCollision(objects[i]);
+			for (auto collisionObject : possibleCollisions) {
+				if (AABBCollision(*objects[i], *collisionObject)) {
+					handleCollision(*objects[i], *collisionObject);
+				}
+			}
 		}
 	}
 

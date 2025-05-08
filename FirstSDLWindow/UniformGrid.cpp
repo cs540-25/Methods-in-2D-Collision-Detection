@@ -27,10 +27,10 @@ std::set<Object*> UniformGrid::setCellsAndScoutCollision(Object* a)	// Returns a
 {
 	vector min = getCell(a->AABB->min());
 	vector max = getCell(a->AABB->max());
-	std::set<Object*> ret(0, NULL);
+	std::set<Object*> ret;
 	for (int i = (int)min.x; i <= (int)max.x; i++) {
 		for (int j = (int)min.y; j <= (int)max.y; j++) {
-			for (auto k = 0; k < uniformGrid[i][j].size(); k++) {
+			for (auto k = 0; k < uniformGrid[i][j].size(); k++) {	// Adding the objects that are already in the vector to the set of possible collisions
 				ret.insert(uniformGrid[i][j][k]);
 			}
 			uniformGrid[i][j].push_back(a);
