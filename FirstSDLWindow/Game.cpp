@@ -43,14 +43,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 		objects.push_back(test);
 
 	}
-	/*Object test1(25, 25, 25, id_count);
-	id_count += 1;
-	test1.color.r = 255;
-	test1.color.g = 0;
-	test1.color.b = 0;
-	test1.acc.x = (float)-30;
-	test1.acc.y = (float)-500;
-	objects.push_back(test1);*/
+	
 	lastTime = std::chrono::steady_clock::now();		// For deltatime calculations
 	deltaTime = 0;
 }
