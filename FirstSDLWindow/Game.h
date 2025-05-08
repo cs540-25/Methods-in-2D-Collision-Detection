@@ -6,15 +6,16 @@
 #include "UniformGrid.h"
 
 enum Flags {
-	DEBUG_INPUT				= 1 << 0,
-	DEBUG_UPDATE			= 1 << 1,
-	DEBUG_RENDERER			= 1 << 2,
-	PRINT_METRICS			= 1 << 3,
-	RENDER_COLLIDERS		= 1 << 4,
-	BRUTE_FORCE_CIRCLE		= 1 << 5,
-	BRUTE_FORCE_AABB		= 1 << 6,
-	SWEEP_AND_PRUNE_AABB	= 1 << 7,
-	UNIFORM_GRID_AABB		= 1 << 8
+	DEBUG_INPUT						= 1 << 0,
+	DEBUG_UPDATE					= 1 << 1,
+	DEBUG_RENDERER					= 1 << 2,
+	PRINT_METRICS					= 1 << 3,
+	RENDER_COLLIDERS				= 1 << 4,
+	BRUTE_FORCE_CIRCLE				= 1 << 5,
+	BRUTE_FORCE_AABB				= 1 << 6,
+	SWEEP_AND_PRUNE_AABB			= 1 << 7,
+	UNIFORM_GRID_AABB				= 1 << 8,
+	VARIANCE_SWEEP_AND_PRUNE_AABB	= 1 << 9
 };
 
 class Game {
