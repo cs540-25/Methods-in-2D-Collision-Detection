@@ -31,9 +31,9 @@ std::set<Object*> UniformGrid::setCellsAndScoutCollision(Object* a)	// Returns a
 	vector max = getCell(a->AABB->max());
 	std::set<Object*> ret;
 	for (int i = (int)min.x; i <= (int)max.x; i++) {
-		if (i > uniformGrid.size() || i < 0) continue;	// Skipping if i falls out of bounds
+		if (i >= uniformGrid.size() || i < 0) continue;	// Skipping if i falls out of bounds
 		for (int j = (int)min.y; j <= (int)max.y; j++) {
-			if (j > uniformGrid[i].size() || j < 0) continue;	// Skipping if j falls out of bounds
+			if (j >= uniformGrid[i].size() || j < 0) continue;	// Skipping if j falls out of bounds
 			for (auto k = 0; k < uniformGrid[i][j].size(); k++) {	// Adding the objects that are already in the vector to the set of possible collisions
 				ret.insert(uniformGrid[i][j][k]);
 			}
