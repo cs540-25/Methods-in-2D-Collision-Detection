@@ -45,7 +45,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 
 	}
 	if (FLAG_IS_SET(UNIFORM_GRID_AABB)) {
-		int cellSize = objects[0]->radius * 2;
+		int cellSize = (int)(objects[0]->radius * 2);
 		uniformGrid = UniformGrid(cellSize, cellSize, width, height);
 	}
 
