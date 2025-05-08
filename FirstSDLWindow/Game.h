@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "SDL.h"
 #include <chrono>
+#include "UniformGrid.h"
 
 enum Flags {
 	DEBUG_INPUT				= 1 << 0,
@@ -12,7 +13,8 @@ enum Flags {
 	RENDER_COLLIDERS		= 1 << 4,
 	BRUTE_FORCE_CIRCLE		= 1 << 5,
 	BRUTE_FORCE_AABB		= 1 << 6,
-	SWEEP_AND_PRUNE_AABB	= 1 << 7
+	SWEEP_AND_PRUNE_AABB	= 1 << 7,
+	UNIFORM_GRID_AABB		= 1 << 8
 };
 
 class Game {

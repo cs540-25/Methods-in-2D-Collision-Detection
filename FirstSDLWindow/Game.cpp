@@ -36,7 +36,7 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 		test->acc.y = (float) 500;
 		
 		// Adding colliders
-		if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+		if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB) || FLAG_IS_SET(UNIFORM_GRID_AABB)) {
 			test->createAABB();
 		}
 		
@@ -231,6 +231,9 @@ int Game::update() {
 				}
 			}
 		}
+
+	}
+	else if (FLAG_IS_SET(UNIFORM_GRID_AABB)) {
 
 	}
 
