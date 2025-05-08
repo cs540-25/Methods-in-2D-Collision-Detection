@@ -232,7 +232,10 @@ int Game::update() {
 
 	}
 	else if (FLAG_IS_SET(UNIFORM_GRID_AABB)) {
-
+		uniformGrid.clearCells();
+		for (size_t i = 0; i < objects.size(); i++) {
+			uniformGrid.setCellsAndScoutCollision(objects[i]);
+		}
 	}
 
 	// Update Object Positions
@@ -371,20 +374,20 @@ int Game::render() {
 			
 			// Drawing colliders
 			if (FLAG_IS_SET(RENDER_COLLIDERS)) {
-				if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB))
-				if (isColliding(objects[i])) {
-					SDL_SetRenderDrawColor(renderer, collisionColor.r, collisionColor.g, collisionColor.b, collisionColor.a);	// Change color to red if colliding
+				if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+					if (isColliding(objects[i])) {
+						SDL_SetRenderDrawColor(renderer, collisionColor.r, collisionColor.g, collisionColor.b, collisionColor.a);	// Change color to red if colliding
+					}
+					else if (isOverlapping(objects[i])) {
+						SDL_SetRenderDrawColor(renderer, overlapColor.r, overlapColor.g, overlapColor.b, overlapColor.a);	// Change color to light blue if overlapping
+					}
+					else {
+						SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a); // Change color to default color for no collisions or overlap
+					}
+					SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
+					SDL_Rect collider = objects[i]->AABB->toSDLRect();
+					SDL_RenderDrawRect(renderer, &collider);
 				}
-				else if (isOverlapping(objects[i])) {
-					SDL_SetRenderDrawColor(renderer, overlapColor.r, overlapColor.g, overlapColor.b, overlapColor.a);	// Change color to light blue if overlapping
-				}
-				else {
-					SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a); // Change color to default color for no collisions or overlap
-				}
-				SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
-				SDL_Rect collider = objects[i]->AABB->toSDLRect();
-				SDL_RenderDrawRect(renderer, &collider);
-				
 			}
 		}
 		else {
