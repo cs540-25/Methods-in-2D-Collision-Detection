@@ -43,7 +43,12 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 		objects.push_back(test);
 
 	}
-	
+	if (FLAG_IS_SET(UNIFORM_GRID_AABB)) {
+		int cellSize = objects[0]->radius * 2;
+		uniformGrid = UniformGrid(cellSize, cellSize, width, height);
+	}
+
+	// Deltatime setup
 	lastTime = std::chrono::steady_clock::now();		// For deltatime calculations
 	deltaTime = 0;
 }

@@ -62,6 +62,9 @@ private:
 	static bool cmpAABBPositions(const Object* a, const Object* b);
 	int AABBOverlap(Object* a, Object* b);	// Returns 1 if overlap, otherwise returns 0; updates the lastOverlapFrame member in objects
 
+	// Uniform Grid members
+	UniformGrid uniformGrid;
+
 	// Collision Functions
 	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not; updates the lastCollisionFrame member in objects
 	int AABBCollision(Object& a, Object& b);			// Returns 1 if collision, 0 if not; updates the lastCollisionFrame member in objects
