@@ -27,6 +27,9 @@
     <ClCompile Include="Footman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UniformGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Footman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UniformGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
