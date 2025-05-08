@@ -5,6 +5,7 @@
 #include <limits>
 #include <cmath>
 #include <algorithm>
+#include <set>
 
 #define FLAG_IS_SET(flag) (((flag) & (flags)) == (flag))
 
@@ -36,21 +37,19 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 		test->acc.y = (float) 500;
 		
 		// Adding colliders
-		if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+		if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB) || FLAG_IS_SET(UNIFORM_GRID_AABB)) {
 			test->createAABB();
 		}
 		
 		objects.push_back(test);
 
 	}
-	/*Object test1(25, 25, 25, id_count);
-	id_count += 1;
-	test1.color.r = 255;
-	test1.color.g = 0;
-	test1.color.b = 0;
-	test1.acc.x = (float)-30;
-	test1.acc.y = (float)-500;
-	objects.push_back(test1);*/
+	if (FLAG_IS_SET(UNIFORM_GRID_AABB)) {
+		int cellSize = (int)(objects[0]->radius * 2);
+		uniformGrid = UniformGrid(cellSize, cellSize, width, height);
+	}
+
+	// Deltatime setup
 	lastTime = std::chrono::steady_clock::now();		// For deltatime calculations
 	deltaTime = 0;
 }
@@ -233,6 +232,17 @@ int Game::update() {
 		}
 
 	}
+	else if (FLAG_IS_SET(UNIFORM_GRID_AABB)) {
+		uniformGrid.clearCells();
+		for (size_t i = 0; i < objects.size(); i++) {
+			std::set<Object*> possibleCollisions = uniformGrid.setCellsAndScoutCollision(objects[i]);
+			for (auto collisionObject : possibleCollisions) {
+				if (AABBCollision(*objects[i], *collisionObject)) {
+					handleCollision(*objects[i], *collisionObject);
+				}
+			}
+		}
+	}
 
 	// Update Object Positions
 	if (DEBUG_UPDATE & flags) std::cout << "Calculating Object Updates!" << std::endl;
@@ -370,20 +380,20 @@ int Game::render() {
 			
 			// Drawing colliders
 			if (FLAG_IS_SET(RENDER_COLLIDERS)) {
-				if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB))
-				if (isColliding(objects[i])) {
-					SDL_SetRenderDrawColor(renderer, collisionColor.r, collisionColor.g, collisionColor.b, collisionColor.a);	// Change color to red if colliding
+				if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+					if (isColliding(objects[i])) {
+						SDL_SetRenderDrawColor(renderer, collisionColor.r, collisionColor.g, collisionColor.b, collisionColor.a);	// Change color to red if colliding
+					}
+					else if (isOverlapping(objects[i])) {
+						SDL_SetRenderDrawColor(renderer, overlapColor.r, overlapColor.g, overlapColor.b, overlapColor.a);	// Change color to light blue if overlapping
+					}
+					else {
+						SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a); // Change color to default color for no collisions or overlap
+					}
+					SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
+					SDL_Rect collider = objects[i]->AABB->toSDLRect();
+					SDL_RenderDrawRect(renderer, &collider);
 				}
-				else if (isOverlapping(objects[i])) {
-					SDL_SetRenderDrawColor(renderer, overlapColor.r, overlapColor.g, overlapColor.b, overlapColor.a);	// Change color to light blue if overlapping
-				}
-				else {
-					SDL_SetRenderDrawColor(renderer, colliderColor.r, colliderColor.g, colliderColor.b, colliderColor.a); // Change color to default color for no collisions or overlap
-				}
-				SDL_RenderDrawPoint(renderer, (int)objects[i]->AABB->center->x, (int)objects[i]->AABB->center->y);	// Drawing the center of the collider
-				SDL_Rect collider = objects[i]->AABB->toSDLRect();
-				SDL_RenderDrawRect(renderer, &collider);
-				
 			}
 		}
 		else {

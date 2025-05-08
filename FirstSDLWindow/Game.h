@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "SDL.h"
 #include <chrono>
+#include "UniformGrid.h"
 
 enum Flags {
 	DEBUG_INPUT				= 1 << 0,
@@ -12,7 +13,8 @@ enum Flags {
 	RENDER_COLLIDERS		= 1 << 4,
 	BRUTE_FORCE_CIRCLE		= 1 << 5,
 	BRUTE_FORCE_AABB		= 1 << 6,
-	SWEEP_AND_PRUNE_AABB	= 1 << 7
+	SWEEP_AND_PRUNE_AABB	= 1 << 7,
+	UNIFORM_GRID_AABB		= 1 << 8
 };
 
 class Game {
@@ -50,7 +52,7 @@ private:
 	// Metrics
 	float minFPS, maxFPS;
 	float fpsTimer;								// Tracks the elapsed time since last fps evaluation
-	float fpsTimerInterval = 0.05;				// How many seconds often to print the FPS
+	float fpsTimerInterval = 0.05f;				// How many seconds often to print the FPS
 	size_t countedFrames;						// This could also be called currentFrame
 
 	void DrawCircle(SDL_Renderer* renderer, Object& circle);	// Draws a circle. (circle rasterization)
@@ -59,6 +61,9 @@ private:
 	static char sortAxis;		// This should only ever be 'x' or 'y'
 	static bool cmpAABBPositions(const Object* a, const Object* b);
 	int AABBOverlap(Object* a, Object* b);	// Returns 1 if overlap, otherwise returns 0; updates the lastOverlapFrame member in objects
+
+	// Uniform Grid members
+	UniformGrid uniformGrid;
 
 	// Collision Functions
 	int boundingCircleCollision(Object& a, Object& b);	// Returns 1 if collision, 0 if not; updates the lastCollisionFrame member in objects
