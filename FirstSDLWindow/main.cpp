@@ -65,6 +65,7 @@ int main(int args, char* argv[]) {
 	std::vector<int> flags;
 	flags.push_back(BRUTE_FORCE_AABB | PRINT_METRICS | RENDER_COLLIDERS);
 	flags.push_back(SWEEP_AND_PRUNE_AABB | PRINT_METRICS | RENDER_COLLIDERS);
+	flags.push_back(VARIANCE_SWEEP_AND_PRUNE_AABB | PRINT_METRICS | RENDER_COLLIDERS);
 	flags.push_back(UNIFORM_GRID_AABB | PRINT_METRICS | RENDER_COLLIDERS);
 
 	for (size_t i = 0; i < flags.size(); i++) {

@@ -37,7 +37,10 @@ Game::Game(const int width, const int height, const int numObjects, const int fl
 		test->acc.y = (float) 500;
 		
 		// Adding colliders
-		if (FLAG_IS_SET(BRUTE_FORCE_AABB) || FLAG_IS_SET(SWEEP_AND_PRUNE_AABB) || FLAG_IS_SET(UNIFORM_GRID_AABB)) {
+		if (FLAG_IS_SET(BRUTE_FORCE_AABB) || 
+			FLAG_IS_SET(SWEEP_AND_PRUNE_AABB) || 
+			FLAG_IS_SET(UNIFORM_GRID_AABB) ||
+			FLAG_IS_SET(VARIANCE_SWEEP_AND_PRUNE_AABB)) {
 			test->createAABB();
 		}
 		
@@ -192,7 +195,7 @@ int Game::update() {
 			}
 		}
 	}
-	else if (FLAG_IS_SET(SWEEP_AND_PRUNE_AABB)) {
+	else if (FLAG_IS_SET(SWEEP_AND_PRUNE_AABB) || FLAG_IS_SET(VARIANCE_SWEEP_AND_PRUNE_AABB)) {
 		// Sort the object array in ascending order based on an axis (it doesn't matter which)
 		//	The axis will be chosen through sortAxis
 		//	cmpAABBPositions(const Object* a, const Object* b)
@@ -213,11 +216,25 @@ int Game::update() {
 		// OPTIONAL (Could maybe add this as an additional collision detection method)
 		//	Calculate the variance (maxOverallPosition - minOverallPosition) of each axis
 		//	Update sortAxis to the axis with the most variance
+
+
+		// For variance based sweep and prune
+		float xVariance, yVariance;	
+		float minX = std::numeric_limits<float>::infinity();
+		float maxX = 0;
+		float minY = std::numeric_limits<float>::infinity();
+		float maxY = 0;
 		std::sort(objects.begin(), objects.end(), cmpAABBPositions);
 		//for (size_t i = 0; i < objects.size(); i++) {
 		//	std::cout << objects[i]->AABB->min().x << std::endl;
 		//}
 		for (size_t i = 0; i < objects.size(); i++) {
+			if (FLAG_IS_SET(VARIANCE_SWEEP_AND_PRUNE_AABB)) {	// Recording the maximums and minimums for the calculation of variance
+				if (objects[i]->AABB->max().x > maxX) maxX = objects[i]->AABB->max().x;
+				if (objects[i]->AABB->min().x < minX) minX = objects[i]->AABB->min().x;
+				if (objects[i]->AABB->max().y > maxY) maxY = objects[i]->AABB->max().y;
+				if (objects[i]->AABB->min().y > minY) minY = objects[i]->AABB->min().y;
+			}
 			for (size_t j = i + 1; j < objects.size(); j++) {	// Only looking at objects after the 'i'th object as to not waste time
 				if (objects[j]->AABB->min().x > objects[i]->AABB->max().x) {
 					break;
@@ -228,6 +245,16 @@ int Game::update() {
 						handleCollision(*objects[i], *objects[j]);
 					}
 				}
+			}
+		}
+		if (FLAG_IS_SET(VARIANCE_SWEEP_AND_PRUNE_AABB)) {
+			xVariance = maxX - minX;
+			yVariance = maxY - minY;
+			if (xVariance >= yVariance) {
+				sortAxis = 'x';
+			}
+			else {
+				sortAxis = 'y';
 			}
 		}
 
