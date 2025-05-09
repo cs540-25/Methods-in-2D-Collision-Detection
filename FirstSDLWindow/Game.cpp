@@ -153,7 +153,7 @@ int Game::update() {
 	totalFrames++;
 	countedFrames++;	// This isn't efficient
 	totalRuntime += deltaTime;
-	if (totalRuntime >= 10.0) {
+	if (totalRuntime >= 60.0) {
 		running = false;
 	}
 	fpsTimer += deltaTime;
